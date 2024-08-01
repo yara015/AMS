@@ -33,11 +33,3 @@ exports.isTenant = (req, res, next) => {
   }
   next();
 };
-
-// Middleware to check if user is manager
-exports.isManager = (req, res, next) => {
-  if (req.user.role !== 'manager') {
-    return res.status(403).json({ success: false, message: 'Access denied. Managers only.' });
-  }
-  next();
-};

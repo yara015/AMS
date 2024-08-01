@@ -108,3 +108,17 @@ exports.validateVisitor = [
     next();
   }
 ];
+
+exports.validateEvent = [
+  body('title').notEmpty().withMessage('Event title is required'),
+  body('date').isISO8601().withMessage('Invalid date format. Use ISO 8601 format (e.g., 2024-07-30T14:30:00Z)'),
+  body('location').notEmpty().withMessage('Location is required'),
+  body('description').optional(), // Set to optional if not required
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+  }
+];

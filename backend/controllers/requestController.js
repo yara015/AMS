@@ -8,20 +8,20 @@ const mongoose = require('mongoose');
 // Create a new service request or complaint
 exports.createRequest = async (req, res) => {
   try {
-    const { type, details } = req.body;
+    const { type, description } = req.body;
     const tenantId = req.user.id; // Get the tenant ID from the authenticated user
 
     // Validate input data
-    if (!type || !details) {
+    if (!type || !description) {
       return res.status(400).json({ success: false, message: 'Type and details are required.' });
     }
 
     // Create a new request
     const newRequest = new Request({
       type,
-      details,
+      description,
       tenant: tenantId,
-      status: 'Pending', // Default status
+      status: 'pending', // Default status
       createdAt: Date.now(),
     });
 
@@ -218,7 +218,7 @@ exports.deleteRequest = async (req, res) => {
 // Get pending requests count (for admin dashboard)
 exports.getPendingRequestsCount = async (req, res) => {
   try {
-    const pendingRequestsCount = await Request.countDocuments({ status: 'Pending' });
+    const pendingRequestsCount = await Request.countDocuments({ status: 'pending' });
     res.status(200).json({ success: true, count: pendingRequestsCount });
   } catch (error) {
     console.error(error);
@@ -230,16 +230,16 @@ exports.getPendingRequestsCount = async (req, res) => {
 exports.getRequestsStatistics = async (req, res) => {
   try {
     const totalRequests = await Request.countDocuments();
-    const pendingRequests = await Request.countDocuments({ status: 'Pending' });
-    const completedRequests = await Request.countDocuments({ status: 'Completed' });
-    const inProgressRequests = await Request.countDocuments({ status: 'In Progress' });
+    const pendingRequests = await Request.countDocuments({ status: 'pending' });
+    const resolvedRequests = await Request.countDocuments({ status: 'resolved' });
+    const inProgressRequests = await Request.countDocuments({ status: 'in_progress' });
 
     res.status(200).json({
       success: true,
       statistics: {
         totalRequests,
         pendingRequests,
-        completedRequests,
+        resolvedRequests,
         inProgressRequests,
       },
     });

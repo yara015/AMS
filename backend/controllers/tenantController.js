@@ -3,8 +3,8 @@
 const User = require('../models/User');
 const Request = require('../models/Request');
 // const Notification = require('../models/Notification');
-// const Payment = require('../models/Payment');
-// const Document = require('../models/Document');
+const Payment = require('../models/Payment');
+const Document = require('../models/Document');
 // const Forum = require('../models/Forum');
 // const Event = require('../models/Event');
 // const ResourceBooking = require('../models/ResourceBooking');
@@ -275,41 +275,41 @@ exports.deleteDocument = async (req, res) => {
   }
 };
 
-// Community forums
-exports.getForums = async (req, res) => {
-  try {
-    const forums = await Forum.find({}).sort({ createdAt: -1 }); // Sort by date descending
-    res.status(200).json({ success: true, forums });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-  }
-};
+// // Community forums
+// exports.getForums = async (req, res) => {
+//   try {
+//     const forums = await Forum.find({}).sort({ createdAt: -1 }); // Sort by date descending
+//     res.status(200).json({ success: true, forums });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+//   }
+// };
 
-exports.createForumPost = async (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const tenantId = req.user.id; // Get the tenant ID from the authenticated user
+// exports.createForumPost = async (req, res) => {
+//   try {
+//     const { title, content } = req.body;
+//     const tenantId = req.user.id; // Get the tenant ID from the authenticated user
 
-    if (!title || !content) {
-      return res.status(400).json({ success: false, message: 'Title and content are required.' });
-    }
+//     if (!title || !content) {
+//       return res.status(400).json({ success: false, message: 'Title and content are required.' });
+//     }
 
-    const newForumPost = new Forum({
-      tenant: tenantId,
-      title,
-      content,
-      createdAt: Date.now(),
-    });
+//     const newForumPost = new Forum({
+//       tenant: tenantId,
+//       title,
+//       content,
+//       createdAt: Date.now(),
+//     });
 
-    await newForumPost.save();
+//     await newForumPost.save();
 
-    res.status(201).json({ success: true, message: 'Forum post created successfully.', forumPost: newForumPost });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-  }
-};
+//     res.status(201).json({ success: true, message: 'Forum post created successfully.', forumPost: newForumPost });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+//   }
+// };
 
 // Community events
 exports.getEvents = async (req, res) => {

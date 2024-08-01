@@ -13,11 +13,13 @@ const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 const tenantRoutes = require('./routes/tenantRoutes');
 app.use('/api/tenants', tenantRoutes);
-
+const requestRoutes = require('./routes/requestRoutes');
+app.use('/api/requests', requestRoutes);   
+const paymentRoutes = require('./routes/paymentRoutes'); 
+app.use('/api/payments', paymentRoutes);
 // const announcementRoutes = require('./routes/announcementRoutes');
-// const eventRoutes = require('./routes/eventRoutes');
-// const paymentRoutes = require('./routes/paymentRoutes');
-// const requestRoutes = require('./routes/requestRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+app.use('/api/events', eventRoutes);
 // const resourceRoutes = require('./routes/resourceRoutes');
 
 // const visitorRoutes = require('./routes/visitorRoutes');
@@ -28,9 +30,8 @@ app.use(express.json()); // For parsing application/json
 // Routes
 
 // app.use('/api/announcements', announcementRoutes);
-// app.use('/api/events', eventRoutes);
-// app.use('/api/payments', paymentRoutes);
-// app.use('/api/requests', requestRoutes);
+
+
 // app.use('/api/resources', resourceRoutes);
 // app.use('/api/visitors', visitorRoutes);
 
