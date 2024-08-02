@@ -17,23 +17,24 @@ const requestRoutes = require('./routes/requestRoutes');
 app.use('/api/requests', requestRoutes);   
 const paymentRoutes = require('./routes/paymentRoutes'); 
 app.use('/api/payments', paymentRoutes);
-// const announcementRoutes = require('./routes/announcementRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
+app.use('/api/announcements', announcementRoutes);
 const eventRoutes = require('./routes/eventRoutes');
 app.use('/api/events', eventRoutes);
-// const resourceRoutes = require('./routes/resourceRoutes');
-
-// const visitorRoutes = require('./routes/visitorRoutes');
-
+const flatRoutes = require('./routes/flatRoutes');
+app.use('/api/flats', flatRoutes);
+const resourceRoutes = require('./routes/resourceRoutes');
+app.use('/api/resources', resourceRoutes);
+const bookingRoutes = require('./routes/bookingRoutes');
+app.use('/api/bookings', bookingRoutes);
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/api/notifications', notificationRoutes);
+const visitorRoutes=require('./routes/visitorRoutes')
+app.use('/api/visitors', visitorRoutes);
+// const feedbackRoutes=require('./routes/feedbackRoutes');
+// app.use('api/feedbacks',feedbackRoutes)
 // Middleware
 app.use(express.json()); // For parsing application/json
-
-// Routes
-
-// app.use('/api/announcements', announcementRoutes);
-
-
-// app.use('/api/resources', resourceRoutes);
-// app.use('/api/visitors', visitorRoutes);
 
 const PORT =  9000;
 

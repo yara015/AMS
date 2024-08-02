@@ -24,10 +24,10 @@ router.get('/:id',
   eventController.getEventById
 );
 //get Upcoming Events
-router.get('/upcomingEvents',authMiddleware.verifyToken,eventController.getUpcomingEvents);
+router.get('/events/upcomingEvents',authMiddleware.verifyToken,eventController.getUpcomingEvents);
 
   //get Past Events
-router.get('/getPastEvents', 
+router.get('/events/getPastEvents', 
     authMiddleware.verifyToken,
     eventController.getPastEvents
   );
@@ -40,14 +40,14 @@ router.put('/:id',
   eventController.updateEvent
 );
 //search events
-router.get('/searchEvents', 
+router.get('/events/searchEvents', 
     authMiddleware.verifyToken,
     eventController.searchEvents
   );
 
 
 // Delete an event by ID (Admin only)
-router.delete('/deleteEvent/:id', 
+router.delete('/events/deleteEvent/:id', 
   authMiddleware.verifyToken, 
   authMiddleware.isAdmin, 
   eventController.deleteEvent

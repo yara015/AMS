@@ -1,39 +1,25 @@
-// const express = require('express');
-// const router = express.Router();
-// const resourceController = require('../controllers/resourceController');
-// const authMiddleware = require('../middleware/authMiddleware');
-// const validationMiddleware = require('../middleware/validationMiddleware');
+const express = require('express');
+const router = express.Router();
+const resourceController = require('../controllers/resourceController');
+const {verifyToken,isAdmin} = require('../middleware/authMiddleware');
+const {validateResource} = require('../middleware/validationMiddleware'); // Optional: Middleware for validation
 
-// // Book a resource
-// router.post('/book', 
-//   authMiddleware.authenticate, 
-//   // validationMiddleware.validateResourceBooking, 
-//   resourceController.bookResource
-// );
+// Create a new resource
+router.post('/', verifyToken, isAdmin, validateResource, resourceController.createResource);
 
-// // Get all available resources
-// router.get('/available', 
-//   authMiddleware.authenticate, 
-//   resourceController.getAvailableResources
-// );
+// Get all resources
+router.get('/resources', verifyToken, resourceController.getAllResources);
 
-// // Get a single resource by ID
-// router.get('/:id', 
-//   authMiddleware.authenticate, 
-//   resourceController.getResourceById
-// );
+// Get a single resource by ID
+router.get('/resources/:id', verifyToken, resourceController.getResourceById);
 
-// // Update a resource booking
-// router.put('/:id', 
-//   authMiddleware.authenticate, 
-//   // validationMiddleware.validateResourceBooking, 
-//   resourceController.updateResourceBooking
-// );
+// Update a resource
+router.put('/resources/:id', verifyToken, isAdmin, validateResource, resourceController.updateResource);
 
-// // Cancel a resource booking
-// router.delete('/:id', 
-//   authMiddleware.authenticate, 
-//   resourceController.cancelResourceBooking
-// );
+// Delete a resource
+router.delete('/resources/:id', verifyToken, isAdmin, resourceController.deleteResource);
 
-// module.exports = router;
+// Get all booked resources
+router.get('/resources/booked', verifyToken, isAdmin, resourceController.getBookedResources);
+
+module.exports = router;

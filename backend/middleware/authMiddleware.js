@@ -11,6 +11,7 @@ exports.verifyToken = async (req, res, next) => {
       if (!newuser) return res.status(401).json({ success: false, message: 'Invalid token.' });
   
       req.user = newuser;
+      console.log(req.user);
       next();
     } catch (error) {
       console.error(error);

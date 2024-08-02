@@ -9,7 +9,6 @@ const {
   getTenantNotifications,
   getRequestDetails,
   getPaymentHistory,
-  makePayment,
   uploadDocument,
   getTenantDocuments,
   deleteDocument,
@@ -26,6 +25,7 @@ const {
   assignTenantToFlat,
   getAllFlats,
   getFlatDetails,
+  deleteTenant,
 } = require('../controllers/tenantController');
 const { verifyToken, isAdmin,isTenant } = require('../middleware/authMiddleware');
 const { createPayment } = require('../controllers/paymentController');
@@ -48,22 +48,21 @@ router.get('/documents', verifyToken,isTenant,getTenantDocuments);
 router.delete('/documents/:id', verifyToken,isTenant, deleteDocument);
 // router.get('/forums', verifyToken, isTenant, getForums);
 // router.post('/forums', verifyToken,isTenant, createForumPost);
-// router.get('/events', verifyToken, isTenant, getEvents);
-// router.post('/events/:id/rsvp', verifyToken, isTenant, rsvpEvent);
-// router.get('/resource-bookings', verifyToken, isTenant, getResourceBookings);
-// router.post('/resource-bookings', verifyToken, isTenant, bookResource);
+router.get('/events', verifyToken, isTenant, getEvents);
+router.post('/events/:id/rsvp', verifyToken, isTenant, rsvpEvent);
+router.get('/resource-bookings', verifyToken, isAdmin,getResourceBookings);
+router.post('/book-resource', verifyToken, bookResource);
 // router.post('/feedback', verifyToken, isTenant, submitFeedback);
-// router.get('/emergency-alerts', verifyToken, isTenant, getEmergencyAlerts);
-// router.get('/vacancies', verifyToken, isTenant, getVacancies);
-// router.put('/family-info', verifyToken, isTenant, updateFamilyInfo);
+router.get('/emergency-alerts', verifyToken, isTenant, getEmergencyAlerts);
+router.get('/vacancies', verifyToken, getVacancies);
+router.put('/family-info', verifyToken, isTenant, updateFamilyInfo);
 
 // Admin routes
 router.get('/tenants',verifyToken,isAdmin,getAllTenants);
-// router.get('/tenants/:id', verifyToken, authorizeAdmin, getTenantProfile); // For admin to view tenant profiles
-// router.put('/tenants/:id', verifyToken, authorizeAdmin, updateTenantProfile);
-// router.delete('/tenants/:id', verifyToken, authorizeAdmin, (req, res) => { /* Implement delete logic here */ });
-// router.get('/flats', verifyToken, authorizeAdmin, getAllFlats);
-// router.get('/flats/:id', verifyToken, authorizeAdmin, getFlatDetails);
-// router.post('/flats/assign', verifyToken, authorizeAdmin, assignTenantToFlat);
+router.get('/tenants/:id', verifyToken, isAdmin, getTenantProfile); // For admin to view tenant profiles
+router.delete('/tenants/:id', verifyToken, isAdmin,deleteTenant);
+router.get('/flats', verifyToken, isAdmin, getAllFlats);
+router.get('/flats/:id', verifyToken, isAdmin, getFlatDetails);
+router.post('/flats/assign', verifyToken, isAdmin, assignTenantToFlat);
 
 module.exports = router;

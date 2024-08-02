@@ -1,15 +1,15 @@
-// models/Visitor.js
+// models/Flat.js
 const mongoose = require('mongoose');
 
-const VisitorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  contact: { type: String, required: true },
-  purpose: { type: String, required: true },
-  host: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the tenant
-  scheduledDate: { type: Date, required: true },
-  checkInTime: { type: Date },
-  checkOutTime: { type: Date },
-  status: { type: String, default: 'pending' } // pending, checked_in, checked_out
+const FlatSchema = new mongoose.Schema({
+  number: { type: String, required: true, unique: true },
+  type: { type: String, enum: ['1BHK', '2BHK', '3BHK', 'penthouse'], required: true },
+  status: { type: String, enum: ['vacant', 'occupied'], default: 'vacant' },
+  tenant: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // List of tenants in the flat
+  family: [{
+    name: { type: String, required: true },
+    relation: { type: String, required: true }
+  }]
 });
 
-module.exports = mongoose.model('Visitor', VisitorSchema);
+module.exports = mongoose.model('Flat', FlatSchema);

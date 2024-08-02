@@ -96,10 +96,23 @@ exports.validateTenant = [
 ];
 
 // Validation middleware for visitors
+const User=require('../models/User');
 exports.validateVisitor = [
   body('name').notEmpty().withMessage('Visitor name is required.'),
-  body('visitDate').notEmpty().withMessage('Visit date is required.'),
-  body('flat').notEmpty().withMessage('Flat information is required.'),
+  body('scheduledDate').notEmpty().withMessage('Scheduled date is required.'),
+  body('hostId').notEmpty().withMessage('Host information is required.'),
+  // .custom(async (value, { host }) => {
+  //   // Validate ObjectId
+  //   if (!mongoose.Types.ObjectId.isValid(value)) {
+  //     throw new Error('Invalid host ID format.');
+  //   }
+  //   // Check if the host exists
+  //   const user = await User.findById(value);
+  //   if (!user) {
+  //     throw new Error('Host not found in the user list.');
+  //   }
+  //   return true;
+  // }),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -109,11 +122,39 @@ exports.validateVisitor = [
   }
 ];
 
+
 exports.validateEvent = [
   body('title').notEmpty().withMessage('Event title is required'),
   body('date').isISO8601().withMessage('Invalid date format. Use ISO 8601 format (e.g., 2024-07-30T14:30:00Z)'),
   body('location').notEmpty().withMessage('Location is required'),
   body('description').optional(), // Set to optional if not required
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+  }
+];
+
+exports.validateBooking = [
+  body('resourceId')
+    .notEmpty().withMessage('Resource ID is required.')
+    .isMongoId().withMessage('Invalid Resource ID format.'),
+  body('startTime')
+    .notEmpty().withMessage('Start time is required.')
+    .isISO8601().withMessage('Start time must be a valid ISO 8601 date.'),
+  
+  body('endTime')
+    .notEmpty().withMessage('End time is required.')
+    .isISO8601().withMessage('End time must be a valid ISO 8601 date.')
+    .custom((value, { req }) => {
+      if (new Date(value) <= new Date(req.body.startTime)) {
+        throw new Error('End time must be after start time.');
+      }
+      return true;
+    }),
+
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

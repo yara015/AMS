@@ -1,156 +1,127 @@
-// // controllers/resourceController.js
+// controllers/resourceController.js
+const Resource = require('../models/Resource');
+const mongoose = require('mongoose');
 
-// const Resource = require('../models/Resource');
-// const Booking = require('../models/Booking');
-// const mongoose = require('mongoose');
+// Create a new resource
+exports.createResource = async (req, res) => {
+  try {
+    const { name, description, availability } = req.body;
 
-// // Book a resource
-// exports.bookResource = async (req, res) => {
-//   try {
-//     const { resourceId, startTime, endTime } = req.body;
-//     const userId = req.user.id;
+    // Validate input data
+    if (!name || !availability || !Array.isArray(availability)) {
+      return res.status(400).json({ success: false, message: 'Name, description, and availability are required.' });
+    }
 
-//     // Validate input data
-//     if (!resourceId || !startTime || !endTime) {
-//       return res.status(400).json({ success: false, message: 'Resource ID, start time, and end time are required.' });
-//     }
+    const newResource = new Resource({
+      name,
+      description,
+      availability
+    });
 
-//     // Check if the resource exists
-//     const resource = await Resource.findById(resourceId);
-//     if (!resource) {
-//       return res.status(404).json({ success: false, message: 'Resource not found.' });
-//     }
+    await newResource.save();
 
-//     // Check if the resource is available during the requested time
-//     const existingBookings = await Booking.find({
-//       resourceId,
-//       $or: [
-//         { $and: [{ startTime: { $lte: endTime } }, { endTime: { $gte: startTime } }] }
-//       ]
-//     });
-    
-//     if (existingBookings.length > 0) {
-//       return res.status(400).json({ success: false, message: 'Resource is not available during the requested time.' });
-//     }
+    res.status(201).json({ success: true, message: 'Resource created successfully.', resource: newResource });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
 
-//     // Create a new booking
-//     const newBooking = new Booking({
-//       resourceId,
-//       userId,
-//       startTime,
-//       endTime,
-//     });
+// Get all resources
+exports.getAllResources = async (req, res) => {
+  try {
+    const resources = await Resource.find();
+    res.status(200).json({ success: true, resources });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
 
-//     // Save the booking
-//     await newBooking.save();
+// Get a single resource by ID
+exports.getResourceById = async (req, res) => {
+  try {
+    const resourceId = req.params.id;
 
-//     res.status(201).json({ success: true, message: 'Resource booked successfully.', booking: newBooking });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
+    if (!mongoose.Types.ObjectId.isValid(resourceId)) {
+      return res.status(400).json({ success: false, message: 'Invalid resource ID.' });
+    }
 
-// // Get all available resources
-// exports.getAvailableResources = async (req, res) => {
-//   try {
-//     // Get all resources
-//     const resources = await Resource.find();
+    const resource = await Resource.findById(resourceId);
+    if (!resource) {
+      return res.status(404).json({ success: false, message: 'Resource not found.' });
+    }
 
-//     // Get current bookings
-//     const bookings = await Booking.find({
-//       $or: [
-//         { startTime: { $lte: new Date() }, endTime: { $gte: new Date() } }
-//       ]
-//     });
+    res.status(200).json({ success: true, resource });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
 
-//     // Filter out unavailable resources
-//     const unavailableResourceIds = bookings.map(booking => booking.resourceId.toString());
-//     const availableResources = resources.filter(resource => !unavailableResourceIds.includes(resource._id.toString()));
+// Update a resource
+exports.updateResource = async (req, res) => {
+  try {
+    const resourceId = req.params.id;
+    const { name, description, availability } = req.body;
 
-//     res.status(200).json({ success: true, availableResources });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
+    if (!mongoose.Types.ObjectId.isValid(resourceId)) {
+      return res.status(400).json({ success: false, message: 'Invalid resource ID.' });
+    }
 
-// // Get a single resource by ID
-// exports.getResourceById = async (req, res) => {
-//   try {
-//     const resourceId = req.params.id;
+    const updatedResource = await Resource.findByIdAndUpdate(
+      resourceId,
+      { name, description, availability },
+      { new: true }
+    );
 
-//     // Validate ObjectId
-//     if (!mongoose.Types.ObjectId.isValid(resourceId)) {
-//       return res.status(400).json({ success: false, message: 'Invalid resource ID.' });
-//     }
+    if (!updatedResource) {
+      return res.status(404).json({ success: false, message: 'Resource not found.' });
+    }
 
-//     const resource = await Resource.findById(resourceId);
-//     if (!resource) {
-//       return res.status(404).json({ success: false, message: 'Resource not found.' });
-//     }
+    res.status(200).json({ success: true, message: 'Resource updated successfully.', resource: updatedResource });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
 
-//     res.status(200).json({ success: true, resource });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
+// Delete a resource
+exports.deleteResource = async (req, res) => {
+  try {
+    const resourceId = req.params.id;
 
-// // Update a resource booking
-// exports.updateResourceBooking = async (req, res) => {
-//   try {
-//     const bookingId = req.params.id;
-//     const { startTime, endTime } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(resourceId)) {
+      return res.status(400).json({ success: false, message: 'Invalid resource ID.' });
+    }
 
-//     // Validate input data
-//     if (!startTime || !endTime) {
-//       return res.status(400).json({ success: false, message: 'Start time and end time are required.' });
-//     }
+    const deletedResource = await Resource.findByIdAndDelete(resourceId);
 
-//     // Validate ObjectId
-//     if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-//       return res.status(400).json({ success: false, message: 'Invalid booking ID.' });
-//     }
+    if (!deletedResource) {
+      return res.status(404).json({ success: false, message: 'Resource not found.' });
+    }
 
-//     // Find and update the booking
-//     const updatedBooking = await Booking.findByIdAndUpdate(
-//       bookingId,
-//       { startTime, endTime },
-//       { new: true }
-//     );
-
-//     if (!updatedBooking) {
-//       return res.status(404).json({ success: false, message: 'Booking not found.' });
-//     }
-
-//     res.status(200).json({ success: true, message: 'Booking updated successfully.', booking: updatedBooking });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
-
-// // Cancel a resource booking
-// exports.cancelResourceBooking = async (req, res) => {
-//   try {
-//     const bookingId = req.params.id;
-
-//     // Validate ObjectId
-//     if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-//       return res.status(400).json({ success: false, message: 'Invalid booking ID.' });
-//     }
-
-//     // Find and delete the booking
-//     const deletedBooking = await Booking.findByIdAndDelete(bookingId);
-
-//     if (!deletedBooking) {
-//       return res.status(404).json({ success: false, message: 'Booking not found.' });
-//     }
-
-//     res.status(200).json({ success: true, message: 'Booking canceled successfully.' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
+    res.status(200).json({ success: true, message: 'Resource deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
+exports.getBookedResources = async (req, res) => {
+    try {
+      // Find resources that have at least one booking with status 'booked'
+      const bookedResources = await Resource.find({
+        'bookings.status': 'booked'
+      });
+  
+      // Check if any resources are found
+      if (bookedResources.length === 0) {
+        return res.status(404).json({ success: false, message: 'No booked resources found.' });
+      }
+  
+      res.status(200).json({ success: true, bookedResources });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    }
+  };

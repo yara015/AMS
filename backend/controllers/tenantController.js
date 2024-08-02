@@ -2,12 +2,14 @@
 
 const User = require('../models/User');
 const Request = require('../models/Request');
-// const Notification = require('../models/Notification');
+const Notification = require('../models/Notification');
 const Payment = require('../models/Payment');
 const Document = require('../models/Document');
+const Flat=require('../models/Flat')
 // const Forum = require('../models/Forum');
-// const Event = require('../models/Event');
-// const ResourceBooking = require('../models/ResourceBooking');
+const Event = require('../models/Event');
+const Booking = require('../models/Booking');
+const Resource=require('../models/Resource');
 // const Feedback = require('../models/Feedback');
 const mongoose = require('mongoose');
 
@@ -353,7 +355,7 @@ exports.rsvpEvent = async (req, res) => {
 // Resource booking (e.g., gym, community hall)
 exports.getResourceBookings = async (req, res) => {
   try {
-    const bookings = await ResourceBooking.find({}).sort({ date: 1 }); // Sort by date ascending
+    const bookings = await Booking.find({}).sort({ date: 1 }); // Sort by date ascending
     res.status(200).json({ success: true, bookings });
   } catch (error) {
     console.error(error);
@@ -363,21 +365,41 @@ exports.getResourceBookings = async (req, res) => {
 
 exports.bookResource = async (req, res) => {
   try {
-    const { resourceId, date, time } = req.body;
-    const tenantId = req.user.id; // Get the tenant ID from the authenticated user
+    const { resourceId, startTime, endTime } = req.body;
+    const userId = req.user._id;
 
-    if (!resourceId || !date || !time) {
-      return res.status(400).json({ success: false, message: 'Resource ID, date, and time are required.' });
+    // Validate input data
+    if (!resourceId || !startTime || !endTime) {
+      return res.status(400).json({ success: false, message: 'Resource ID, start time, and end time are required.' });
     }
 
-    const newBooking = new ResourceBooking({
-      tenant: tenantId,
+    // Check if the resource exists
+    const resource = await Resource.findById(resourceId);
+    if (!resource) {
+      return res.status(404).json({ success: false, message: 'Resource not found.' });
+    }
+
+    // Check if the resource is available during the requested time
+    const existingBookings = await Booking.find({
       resourceId,
-      date,
-      time,
-      createdAt: Date.now(),
+      $or: [
+        { $and: [{ startTime: { $lte: endTime } }, { endTime: { $gte: startTime } }] }
+      ]
+    });
+    
+    if (existingBookings.length > 0) {
+      return res.status(400).json({ success: false, message: 'Resource is not available during the requested time.' });
+    }
+
+    // Create a new booking
+    const newBooking = new Booking({
+      resourceId,
+      userId,
+      startTime,
+      endTime,
     });
 
+    // Save the booking
     await newBooking.save();
 
     res.status(201).json({ success: true, message: 'Resource booked successfully.', booking: newBooking });
@@ -495,41 +517,6 @@ exports.assignTenantToFlat = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
   }
 };
-// Assign a tenant to a flat (Admin use only)
-exports.assignTenantToFlat = async (req, res) => {
-    try {
-      const { flatId, tenantId, startDate } = req.body;
-  
-      // Validate input data
-      if (!flatId || !tenantId || !startDate) {
-        return res.status(400).json({ success: false, message: 'Flat ID, Tenant ID, and start date are required.' });
-      }
-  
-      // Validate ObjectId
-      if (!mongoose.Types.ObjectId.isValid(flatId) || !mongoose.Types.ObjectId.isValid(tenantId)) {
-        return res.status(400).json({ success: false, message: 'Invalid ID(s) provided.' });
-      }
-  
-      const flat = await Flat.findById(flatId);
-      if (!flat) {
-        return res.status(404).json({ success: false, message: 'Flat not found.' });
-      }
-  
-      const tenant = await User.findById(tenantId);
-      if (!tenant) {
-        return res.status(404).json({ success: false, message: 'Tenant not found.' });
-      }
-  
-      flat.tenant = tenantId;
-      flat.status = 'occupied';
-      await flat.save();
-  
-      res.status(200).json({ success: true, message: 'Tenant assigned to flat successfully.', flat });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-    }
-  };
 // Get all flats with vacancy status (Admin use only)
 exports.getAllFlats = async (req, res) => {
     try {
@@ -562,4 +549,36 @@ exports.getAllFlats = async (req, res) => {
       res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
     }
   };
-        
+exports.deleteTenant = async (req, res) => {
+  try {
+    const tenantId = req.params.id;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(tenantId)) {
+      return res.status(400).json({ success: false, message: 'Invalid tenant ID.' });
+    }
+
+    // Find the tenant
+    const tenant = await User.findById(tenantId);
+    if (!tenant) {
+      return res.status(404).json({ success: false, message: 'Tenant not found.' });
+    }
+
+    // Find the flat occupied by the tenant
+    const flat = await Flat.findOne({ tenant: tenantId });
+    if (flat) {
+      // Set the flat status to vacant and remove the tenant reference
+      flat.status = 'vacant';
+      flat.tenant = null;
+      await flat.save();
+    }
+
+    // Delete the tenant
+    await User.findByIdAndDelete(tenantId);
+
+    res.status(200).json({ success: true, message: 'Tenant deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
