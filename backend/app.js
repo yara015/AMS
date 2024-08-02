@@ -7,6 +7,11 @@ const app = express();
 // Connect Database
 connectDB();
 
+
+app.use(express.json()); // For parsing application/json
+
+
+
 // Init Middleware
 app.use(express.json({ extended: true }));
 const authRoutes = require('./routes/authRoutes');
@@ -31,10 +36,10 @@ const notificationRoutes = require('./routes/notificationRoutes');
 app.use('/api/notifications', notificationRoutes);
 const visitorRoutes=require('./routes/visitorRoutes')
 app.use('/api/visitors', visitorRoutes);
-// const feedbackRoutes=require('./routes/feedbackRoutes');
-// app.use('api/feedbacks',feedbackRoutes)
+const feedbackRoutes=require('./routes/feedbackRoutes');
+app.use('/api/feedbacks',feedbackRoutes);
 // Middleware
-app.use(express.json()); // For parsing application/json
+
 
 const PORT =  9000;
 

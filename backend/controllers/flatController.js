@@ -39,30 +39,30 @@ exports.getVacancies = async (req, res) => {
   }
 };
 
-// Update tenant family information
-exports.updateFamilyInfo = async (req, res) => {
-  try {
-    const tenantId = req.user.id;
-    const { family } = req.body;
+// // Update tenant family information
+// exports.updateFamilyInfo = async (req, res) => {
+//   try {
+//     const tenantId = req.user.id;
+//     const { family } = req.body;
 
-    if (!family || !Array.isArray(family)) {
-      return res.status(400).json({ success: false, message: 'Family information is required and should be an array.' });
-    }
+//     if (!family || !Array.isArray(family)) {
+//       return res.status(400).json({ success: false, message: 'Family information is required and should be an array.' });
+//     }
 
-    const flat = await Flat.findOne({ tenant: tenantId });
-    if (!flat) {
-      return res.status(404).json({ success: false, message: 'Flat not found for the current tenant.' });
-    }
+//     const flat = await Flat.findOne({ tenant: tenantId });
+//     if (!flat) {
+//       return res.status(404).json({ success: false, message: 'Flat not found for the current tenant.' });
+//     }
 
-    flat.family = family;
-    await flat.save();
+//     flat.family = family;
+//     await flat.save();
 
-    res.status(200).json({ success: true, message: 'Family information updated successfully.', flat });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-  }
-};
+//     res.status(200).json({ success: true, message: 'Family information updated successfully.', flat });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+//   }
+// };
 
 // Assign a tenant to a flat (Admin use only)
 exports.assignTenantToFlat = async (req, res) => {
@@ -116,7 +116,7 @@ exports.assignTenantToFlat = async (req, res) => {
 // Get all flats with vacancy status (Admin use only)
 exports.getAllFlats = async (req, res) => {
   try {
-    const flats = await Flat.find().populate('tenant', 'name email');
+    const flats = await Flat.find().populate('tenant');
     res.status(200).json({ success: true, flats });
   } catch (error) {
     console.error(error);

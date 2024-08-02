@@ -10,7 +10,7 @@ const Flat=require('../models/Flat')
 const Event = require('../models/Event');
 const Booking = require('../models/Booking');
 const Resource=require('../models/Resource');
-// const Feedback = require('../models/Feedback');
+const Feedback = require('../models/Feedback');
 const mongoose = require('mongoose');
 
 // Get all tenants (Admin use only)
@@ -27,7 +27,7 @@ exports.getAllTenants = async (req, res) => {
 // Get tenant profile by ID (Admin use only)
 exports.getTenantProfile = async (req, res) => {
   try {
-    const tenantId = req.params.id;
+    const tenantId = req.user.id;
 
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(tenantId)) {
@@ -468,15 +468,15 @@ exports.updateFamilyInfo = async (req, res) => {
       }
   
       // Update family information for the tenant
-      const flat = await Flat.findOne({ tenant: tenantId });
-      if (!flat) {
-        return res.status(404).json({ success: false, message: 'Flat not found for the current tenant.' });
+      const user = await User.findById( tenantId );
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'user not found for the current tenant.' });
       }
   
-      flat.family = family;
-      await flat.save();
+      user.familyMembers = family;
+      await user.save();
   
-      res.status(200).json({ success: true, message: 'Family information updated successfully.', flat });
+      res.status(200).json({ success: true, message: 'Family information updated successfully.', family});
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });

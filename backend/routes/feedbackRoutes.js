@@ -6,6 +6,7 @@ const { verifyToken, isAdmin, isTenant } = require('../middleware/authMiddleware
 // Get feedbacks for a specific tenant
 router.get('/tenant',
      verifyToken,
+      isTenant,
       feedbackController.getFeedback
 );
 
@@ -16,7 +17,7 @@ router.get('/', verifyToken, isAdmin, feedbackController.getFeedbackForAdmin);
 router.post('/', verifyToken, feedbackController.submitFeedback);
 
 // Update feedback
-router.put('/:feedback_id', verifyToken, feedbackController.updatedFeedback);
+router.put('/:feedback_id', verifyToken, feedbackController.updateFeedback);
 
 // Delete feedback
 router.delete('/:feedback_id', verifyToken, feedbackController.deleteFeedback);

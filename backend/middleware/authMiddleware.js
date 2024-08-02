@@ -3,6 +3,7 @@ const user = require('../models/User');
 // Middleware to authenticate users
 exports.verifyToken = async (req, res, next) => {
     try {
+      console.log("token verified")
       const token = req.headers['authorization']?.split(' ')[1];
       if (!token) return res.status(401).json({ success: false, message: 'No token provided.' });
   

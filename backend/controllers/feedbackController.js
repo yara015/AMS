@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const Feedback = require('../models/Feedback');
 const router = express.Router();
 
-// Get feedbacks for a specific tenant (if applicable) personal
-exports.getFeedback=async (req, res) => {
+// Get feedbacks for a specific tenant (if applicable)
+exports.getFeedback = async (req, res) => {
   try {
-    const { tenant_id } = req.user.id;
-    const tenantObjectId = new mongoose.Types.ObjectId(tenant_id);
+    const tenantId = req.user._id; // Corrected from tenant_id to user._id
+    const tenantObjectId = new mongoose.Types.ObjectId(tenantId);
 
     console.log('Fetching feedbacks for tenant_id:', tenantObjectId);
 
@@ -22,7 +22,7 @@ exports.getFeedback=async (req, res) => {
 };
 
 // Get all feedbacks (admin only)
-exports.getFeedbackForAdmin=async (req, res) => {
+exports.getFeedbackForAdmin = async (req, res) => {
   try {
     console.log('Fetching all feedbacks');
 
@@ -37,10 +37,10 @@ exports.getFeedbackForAdmin=async (req, res) => {
 };
 
 // Submit new feedback
-exports.submitFeedback=async (req, res) => {
+exports.submitFeedback = async (req, res) => {
   try {
     const { content } = req.body;
-    const tenantId = req.user.id; // Get the tenant ID from the authenticated user
+    const tenantId = req.user._id; // Get the tenant ID from the authenticated user
     if (!content) {
       return res.status(400).send({ error: 'Content is required' });
     }
@@ -59,7 +59,7 @@ exports.submitFeedback=async (req, res) => {
 };
 
 // Update feedback
-exports.updatedFeedback=async (req, res) => {
+exports.updateFeedback = async (req, res) => {
   try {
     const { feedback_id } = req.params;
     const updatedFeedback = await Feedback.findByIdAndUpdate(feedback_id, req.body, { new: true }).populate('tenant');
@@ -76,7 +76,7 @@ exports.updatedFeedback=async (req, res) => {
 };
 
 // Delete feedback
-exports.deleteFeedback=async (req, res) => {
+exports.deleteFeedback = async (req, res) => {
   try {
     const { feedback_id } = req.params;
 
@@ -91,5 +91,3 @@ exports.deleteFeedback=async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 };
-
-//module.exports = router;
