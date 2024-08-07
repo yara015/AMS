@@ -32,7 +32,7 @@ exports.bookResource = async (req, res) => {
     if (existingBookings.length > 0) {
       return res.status(400).json({ success: false, message: 'Resource is not available during the requested time.' });
     }
-
+    const tenant=req.user;
     // Create a new booking
     const newBooking = new Booking({
       resourceId,
@@ -40,9 +40,15 @@ exports.bookResource = async (req, res) => {
       startTime,
       endTime,
     });
-
+    resource.bookings.push({
+      tenant,
+      startTime,
+      endTime,
+    });
     // Save the booking
     await newBooking.save();
+    await resource.save();
+    
 
     res.status(201).json({ success: true, message: 'Resource booked successfully.', booking: newBooking });
   } catch (error) {

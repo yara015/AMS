@@ -104,6 +104,7 @@ exports.submitRequest = async (req, res) => {
     const newRequest = new Request({
       tenant: tenantId,
       title,
+      type :'request',
       description,
       status: 'pending', // Default status
       date: Date.now(),
@@ -276,42 +277,6 @@ exports.deleteDocument = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
   }
 };
-
-// // Community forums
-// exports.getForums = async (req, res) => {
-//   try {
-//     const forums = await Forum.find({}).sort({ createdAt: -1 }); // Sort by date descending
-//     res.status(200).json({ success: true, forums });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
-
-// exports.createForumPost = async (req, res) => {
-//   try {
-//     const { title, content } = req.body;
-//     const tenantId = req.user.id; // Get the tenant ID from the authenticated user
-
-//     if (!title || !content) {
-//       return res.status(400).json({ success: false, message: 'Title and content are required.' });
-//     }
-
-//     const newForumPost = new Forum({
-//       tenant: tenantId,
-//       title,
-//       content,
-//       createdAt: Date.now(),
-//     });
-
-//     await newForumPost.save();
-
-//     res.status(201).json({ success: true, message: 'Forum post created successfully.', forumPost: newForumPost });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
-//   }
-// };
 
 // Community events
 exports.getEvents = async (req, res) => {

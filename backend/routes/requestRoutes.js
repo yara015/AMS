@@ -40,7 +40,7 @@ router.get('/id/:requestId',
 // Delete a request by ID (Admin only)
 router.delete('/delete/:requestId', 
   authMiddleware.verifyToken, 
-  authMiddleware.isAdmin, 
+  //authMiddleware.isAdmin, 
   requestController.deleteRequest
 );
 

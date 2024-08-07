@@ -37,19 +37,26 @@ const upload = multer({ dest: 'uploads/' });
 // // Routes for tenants
 router.get('/profile', verifyToken, isTenant, getTenantProfile); // Note: Changed to getTenantProfile for tenant view
 router.put('/profile', verifyToken, isTenant, updateTenantProfile);
+
 router.get('/requests', verifyToken, isTenant, getTenantRequests);
 router.post('/requests', verifyToken, isTenant, submitRequest);
-router.get('/notifications', verifyToken, isTenant, getTenantNotifications);
 router.get('/requests/:id', verifyToken, isTenant, getRequestDetails);
+
+router.get('/notifications', verifyToken, isTenant, getTenantNotifications);
+
 router.get('/payments', verifyToken, isTenant, getPaymentHistory);
 router.post('/payments', verifyToken, isTenant, createPayment);
+
 router.post('/documents', verifyToken, isTenant,upload.single('file'), uploadDocument);
 router.get('/documents', verifyToken,isTenant,getTenantDocuments);
 router.delete('/documents/:id', verifyToken,isTenant, deleteDocument);
+
 router.get('/events', verifyToken, isTenant, getEvents);
 router.post('/events/:id/rsvp', verifyToken, isTenant, rsvpEvent);
+
 router.get('/resource-bookings', verifyToken, isAdmin,getResourceBookings);
-router.post('/book-resource', verifyToken, bookResource);
+router.post('/book-resource', verifyToken,isTenant, bookResource);
+
 router.post('/feedback', verifyToken, isTenant, submitFeedback);
 router.get('/emergency-alerts', verifyToken, isTenant, getEmergencyAlerts);
 router.get('/vacancies', verifyToken, getVacancies);

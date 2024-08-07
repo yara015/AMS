@@ -7,7 +7,8 @@ const ResourceSchema = new mongoose.Schema({
   availability: [{ type: Date }], // Array of available time slots
   bookings: [{
     tenant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    date: { type: Date, required: true },
+    startTime:{type: Date, required: true },
+    endTime: { type: Date, required: true },
     status: { type: String, enum: ['booked', 'cancelled'], default: 'booked' }
   }]
 });

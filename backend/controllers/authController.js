@@ -1,11 +1,17 @@
 // controllers/authController.js
 
 const User = require('../models/User');
+const Token=require('../models/Token');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const { env } = require('process');
 require('dotenv').config();
+
+
+
+
 // Helper function to generate JWT
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -45,7 +51,7 @@ exports.register = async (req, res) => {
     if (!name || !email || !password || !role) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-
+w
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -124,10 +130,10 @@ exports.login = async (req, res) => {
 // Get current user profile
 exports.getProfile = async (req, res) => {
   try {
-    const userId = req.user?.id;
+    const userId = req.user.id;
 
     // Retrieve user profile
-    const user = await User.findById(userId).select('password');
+    const user = await User.findById(userId)//.select('password');
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
@@ -214,8 +220,15 @@ exports.logout = (req, res) => {
     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
   }
 };
+// const redis = require('redis');
+// const client = redis.createClient();
 
-// Forgot password
+// // Error handling for Redis connection
+// client.on('error', (err) => {
+//   console.error('Redis error:', err);
+// });
+
+//Forgot password
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -231,14 +244,17 @@ exports.forgotPassword = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
-    // Generate a reset token
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
-    await user.save();
+    // Generate or reuse a reset token
+    let token = await Token.findOne({ userId: user._id });
+    if (!token) {
+      token = await new Token({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString('hex'),
+      }).save();
+    }
 
     // Send reset email
-    const resetUrl = `${req.protocol}://${req.get('host')}/passwordReset/${resetToken}`;
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${token.token}`;
     sendEmail(
       email,
       'Password Reset Request',
@@ -247,12 +263,12 @@ exports.forgotPassword = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'Password reset email sent.' });
   } catch (error) {
-    console.error(error);
+    console.error('Forgot Password Error:', error);
     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
   }
 };
 
-// Reset password
+// Reset Password
 exports.resetPassword = async (req, res) => {
   try {
     const { resetToken } = req.params;
@@ -263,25 +279,27 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ success: false, message: 'New password is required.' });
     }
 
-    // Find user by reset token
-    const user = await User.findOne({
-      resetPasswordToken: resetToken,
-      resetPasswordExpire: { $gt: Date.now() },
-    });
-
-    if (!user) {
+    // Find the token and associated user
+    const token = await Token.findOne({ token: resetToken });
+    if (!token) {
       return res.status(400).json({ success: false, message: 'Invalid or expired token.' });
     }
 
-    // Hash new password and update
+    const user = await User.findById(token.userId);
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'User not found.' });
+    }
+
+    // Hash new password and update user
     user.password = await bcrypt.hash(newPassword, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
     await user.save();
+
+    // Delete the token
+    await token.delete();
 
     res.status(200).json({ success: true, message: 'Password reset successfully.' });
   } catch (error) {
-    console.error(error);
+    console.error('Reset Password Error:', error);
     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
   }
 };

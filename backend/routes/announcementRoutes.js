@@ -15,11 +15,12 @@ router.post(
 );
 
 // Get all announcements
-router.get('/', announcementController.getAnnouncements);
+router.get('/', authMiddleware.verifyToken,announcementController.getAnnouncements);
 
 // Get a single announcement by ID
 router.get(
   '/:id',
+  authMiddleware.verifyToken,
   announcementController.getAnnouncementById
 );
 

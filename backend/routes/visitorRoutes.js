@@ -4,7 +4,7 @@ const visitorController = require('../controllers/visitorController');
 const { verifyToken, isAdmin,isTenant} = require('../middleware/authMiddleware');
 const { validateVisitor} = require('../middleware/validationMiddleware');
 // Register a new visitor
-router.post('/register', verifyToken,validateVisitor, visitorController.registerVisitor);
+router.post('/register', verifyToken,isAdmin,validateVisitor, visitorController.registerVisitor);
 
 // Get all visitors (Admin use only)
 router.get('/', verifyToken, isAdmin, visitorController.getAllVisitors);
@@ -15,7 +15,7 @@ router.get('/myVisitors', verifyToken, isTenant, visitorController.getAllVisitor
 router.get('/:id', verifyToken, isAdmin, visitorController.getVisitorById);
 
 // Update visitor status (check-in/check-out)
-router.put('/status', verifyToken, visitorController.updateVisitorStatus);
+router.put('/status', verifyToken,isAdmin, visitorController.updateVisitorStatus);
 
 // Notify host about visitor arrival
 router.post('/notify', verifyToken, visitorController.notifyHost);

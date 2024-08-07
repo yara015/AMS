@@ -7,18 +7,19 @@ const mongoose = require('mongoose');
 //create new Payment
 exports.createPayment = async (req, res) => {
   try {
-    const { userId, amount, type, date, status } = req.body;
+    const { amount, paymentType, date, status } = req.body;
 
     // Validate input data
-    if (!userId || !amount || !type || !date || !status) {
+    if (!amount || !paymentType || !date || !status) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-
+    const userId=req.user.id;
+    const tenant=await User.findById(userId);
     // Create a new payment record
     const newPayment = new Payment({
-      userId,
+      tenant,
       amount,
-      type,
+      paymentType,
       date: new Date(date),
       status,
     });
@@ -85,8 +86,24 @@ exports.getPaymentsByUser = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ success: false, message: 'Invalid user ID.' });
     }
+    const tenant=User.findById(userId);
+    const payments = await Payment.find({ tenant }).sort({ date: -1 });
 
-    const payments = await Payment.find({ userId }).sort({ date: -1 });
+    res.status(200).json({ success: true, payments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+  }
+};
+exports.getPaymentsOfUser = async (req, res) => {
+  try {
+    const tenant=req.user;
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(tenant)) {
+      return res.status(400).json({ success: false, message: 'Invalid user.' });
+    }
+    
+    const payments = await Payment.find({tenant}).sort({ date: -1 });
 
     res.status(200).json({ success: true, payments });
   } catch (error) {
@@ -154,8 +171,8 @@ exports.deletePayment = async (req, res) => {
 };
 exports.getPaymentHistory = async (req, res) => {
     try {
-      const userId = req.user._id;
-      const payments = await Payment.find({ user: userId }).sort({ date: -1 });
+      const user = req.user;
+      const payments = await Payment.find({tenant:user}).sort({ date: -1 });
       res.status(200).json({ success: true, payments });
     } catch (error) {
       console.error(error);

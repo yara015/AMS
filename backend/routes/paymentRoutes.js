@@ -22,9 +22,14 @@ router.get('/admin/all',
 // Get all payments by user ID (Tenant or Admin)
 router.get('/user/:userId', 
   authMiddleware.verifyToken, 
+  authMiddleware.isAdmin,
   paymentController.getPaymentsByUser
 );
-
+router.get('/user',
+  authMiddleware.verifyToken, 
+  authMiddleware.isTenant,
+  paymentController.getPaymentsOfUser
+)
 // Update a payment record by ID (Admin only)
 router.put('/:id', 
   authMiddleware.verifyToken, 
