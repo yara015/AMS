@@ -135,9 +135,9 @@ function Register() {
             `}</style>
             <Row className="w-100 justify-content-center">
                 <Col xs={12} md={8} lg={6} className="text-center">
-                    {/* <div className="logo-section mb-4">
-                        <img src="C:/Users/Yarap/Desktop/AMS/frontend/ams/src/utilities/logofinal.png" alt="Logo" width="150" height="150" />
-                    </div> */}
+                    <div className="logo-section mb-4">
+                        <img src="images/logofinal.png" alt="Logo" width="150" height="150" />
+                    </div>
                     <main className="register-form">
                         <h1 className="register-heading h3 mb-3 fw-normal">Register</h1>
                         <Form onSubmit={handleSubmit}>

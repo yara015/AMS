@@ -7,10 +7,12 @@ import Register from './Pages/Register';
 import { UserContextProvider } from './Context/UserContext';
 import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
+import LandingPage from './pages/LandingPage';
 function App() {
     return (
         <UserContextProvider>
             <Routes>
+                <Route path="/" element={<LandingPage />} />
                 <Route exact path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login/forgot-password" element={<ForgotPassword/>}/>
