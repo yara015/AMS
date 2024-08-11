@@ -3,13 +3,14 @@ const connectDB = require('./config/db');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
-
+const cors=require('cors');
 // Connect Database
 connectDB();
 
 
 app.use(express.json()); // For parsing application/json
-
+app.use(cors());
+// app.use(cors({origin:"http://localhost:5173",credentials:true}))
 
 
 // Init Middleware

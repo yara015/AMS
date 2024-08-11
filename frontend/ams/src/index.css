@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -64,5 +64,77 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+} */
+/* Reset some basic elements to ensure consistency across browsers */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif; /* Use a basic font for consistency */
+}
+
+html, body {
+  height: 100%;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333; /* Default text color */
+}
+
+body {
+  background-color: #334852; /* Light background color for the entire page */
+}
+
+/* Provide some spacing for content within the body */
+main {
+  padding: 2rem;
+}
+
+/* Basic styling for links */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Basic styling for headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Center align the root element and provide full height */
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Utility classes for margins and padding */
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 3rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 3rem; }
+.p-4 { padding: 1.5rem; }
+.p-5 { padding: 3rem; }
+
+/* Basic styling for containers */
+/* .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem; /* Padding for smaller screens */
+
+
+/* Ensure responsive behavior */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem; /* Less padding for smaller screens */
   }
 }

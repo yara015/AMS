@@ -40,11 +40,10 @@ router.post('/logout',
   authController.logout
 );
 router.post('/forgot-Password', 
-  authMiddleware.verifyToken, 
   authController.forgotPassword
 );
 router.post('/reset-password', 
-  authMiddleware.verifyToken, 
+
   authController.resetPassword
 );
 router.get('/getAllusers', 

@@ -45,19 +45,21 @@ const sendEmail = async (email, subject, text) => {
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
-
+    const { name, email, password,confirmpassword, role } = req.body;
+    console.log(name,email,password,confirmpassword,role);
     // Validate input data
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ success: false, message: 'All fields are required.' });
+    if (!name || !email || !password || !role ||!confirmpassword) {
+      return res.status(400).json({ success: false, errors:['All fields are required.' ]});
     }
-w
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ success: false, message: 'Email already in use.' });
+      return res.status(400).json({ success: false, errors:[ 'Email already in use.' ]});
     }
-
+    if(password!=confirmpassword){
+      return res.status(400).json({ success: false, errors:[ 'password doesnot match']});
+    }
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -82,10 +84,10 @@ w
       `Hello ${name},\n\nWelcome to the Apartment Management System. Your account has been created successfully.\n\nBest Regards,\nManagement Team`
     );
 
-    res.status(201).json({ success: true, message: 'User registered successfully.', token });
+    res.status(201).json({ success: true, errors:[ 'User registered successfully.'], token });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    console.error(error); 
+    res.status(500).json({ success: false, errors:['Server error. Please try again later.'], error });
   }
 };
 
@@ -96,25 +98,25 @@ exports.login = async (req, res) => {
 
     // Validate input data
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Email and password are required.' });
+      return res.status(400).json({ success: false, errors:[ 'Email and password are required.'] });
     }
 
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ success: false, message: 'user doesnot exists sign up.' });
+      return res.status(400).json({ success: false, errors: ['user doesnot exists sign up.'] });
     }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Invalid email or password.' });
+      return res.status(400).json({ success: false, errors: ['Invalid email or password.'] });
     }
 
     // Generate a token
     const token = generateToken(user);
 
-    res.status(200).json({ success: true, message: 'Logged in successfully.', token });
+    res.status(200).json({ success: true, errors:[ 'Logged in successfully.'], token });
 
     sendEmail(
       email,
@@ -123,7 +125,7 @@ exports.login = async (req, res) => {
     );
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -135,13 +137,13 @@ exports.getProfile = async (req, res) => {
     // Retrieve user profile
     const user = await User.findById(userId)//.select('password');
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ success: false, errors:[ 'User not found.'] });
     }
 
     res.status(200).json({ success: true, user });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -153,7 +155,7 @@ exports.updateProfile = async (req, res) => {
 
     // Validate input data
     if (!name && !email && !password) {
-      return res.status(400).json({ success: false, message: 'At least one field is required to update.' });
+      return res.status(400).json({ success: false, errors:[ 'At least one field is required to update.'] });
     }
 
     // Prepare update data
@@ -166,13 +168,13 @@ exports.updateProfile = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
 
     if (!updatedUser) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ success: false, errors:[ 'User not found.'] });
     }
 
-    res.status(200).json({ success: true, message: 'Profile updated successfully.', user: updatedUser });
+    res.status(200).json({ success: true, errors:[ 'Profile updated successfully.'], user: updatedUser });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -184,29 +186,29 @@ exports.changePassword = async (req, res) => {
 
     // Validate input data
     if (!oldPassword || !newPassword) {
-      return res.status(400).json({ success: false, message: 'Both old and new passwords are required.' });
+      return res.status(400).json({ success: false, errors:[ 'Both old and new passwords are required.'] });
     }
 
     // Retrieve user
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ success: false, errors:[ 'User not found.'] });
     }
 
     // Check old password
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Old password is incorrect.' });
+      return res.status(400).json({ success: false, errors:[ 'Old password is incorrect.'] });
     }
 
     // Hash new password and update
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
-    res.status(200).json({ success: true, message: 'Password changed successfully.' });
+    res.status(200).json({ success: true, errors:[ 'Password changed successfully.'] });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -214,10 +216,10 @@ exports.changePassword = async (req, res) => {
 exports.logout = (req, res) => {
   try {
     res.clearCookie('token');
-    res.status(200).json({ success: true, message: 'Logged out successfully.' });
+    res.status(200).json({ success: true, errors:[ 'Logged out successfully.'] });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 // const redis = require('redis');
@@ -235,13 +237,13 @@ exports.forgotPassword = async (req, res) => {
 
     // Validate input data
     if (!email) {
-      return res.status(400).json({ success: false, message: 'Email is required.' });
+      return res.status(400).json({ success: false, errors:[ 'Email is required.' ]});
     }
 
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ success: false, errors:[ 'User not found.'] });
     }
 
     // Generate or reuse a reset token
@@ -261,10 +263,10 @@ exports.forgotPassword = async (req, res) => {
       `Hello,\n\nYou requested to reset your password. Please use the following link to reset your password:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email.\n\nBest Regards,\nManagement Team`
     );
 
-    res.status(200).json({ success: true, message: 'Password reset email sent.' });
+    res.status(200).json({ success: true, errors:[ 'Password reset email sent.' ]});
   } catch (error) {
     console.error('Forgot Password Error:', error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -273,21 +275,25 @@ exports.resetPassword = async (req, res) => {
   try {
     const { resetToken } = req.params;
     const { newPassword } = req.body;
+    const {confirmpassword}=req.body;
 
     // Validate input data
     if (!newPassword) {
-      return res.status(400).json({ success: false, message: 'New password is required.' });
+      return res.status(400).json({ success: false, errors:[ 'New password is required.'] });
+    }
+    if(newPassword!=confirmpassword){
+      return res.status(400).json({ success: false, errors:[ 'password doesnot match!'] });
     }
 
     // Find the token and associated user
     const token = await Token.findOne({ token: resetToken });
     if (!token) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired token.' });
+      return res.status(400).json({ success: false, errors:[ 'Invalid or expired token.' ]});
     }
 
     const user = await User.findById(token.userId);
     if (!user) {
-      return res.status(400).json({ success: false, message: 'User not found.' });
+      return res.status(400).json({ success: false, errors:[ 'User not found.' ]});
     }
 
     // Hash new password and update user
@@ -297,10 +303,10 @@ exports.resetPassword = async (req, res) => {
     // Delete the token
     await token.delete();
 
-    res.status(200).json({ success: true, message: 'Password reset successfully.' });
+    res.status(200).json({ success: true, errors:[ 'Password reset successfully.'] });
   } catch (error) {
     console.error('Reset Password Error:', error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -311,7 +317,7 @@ exports.getAllUsers = async (req, res) => {
     res.status(200).json({ success: true, users });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -323,15 +329,15 @@ exports.deleteUser = async (req, res) => {
     // Check if user exists
     const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ success: false, errors:[ 'User not found.' ]});
     }
 
     // Delete the user
     await user.remove();
-    res.status(200).json({ success: true, message: 'User deleted successfully.' });
+    res.status(200).json({ success: true, errors:[ 'User deleted successfully.'] });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
 
@@ -343,22 +349,22 @@ exports.deleteUser = async (req, res) => {
 
 //     // Validate input data
 //     if (!role) {
-//       return res.status(400).json({ success: false, message: 'Role is required.' });
+//       return res.status(400).json({ success: false, errors:[ 'Role is required.' });
 //     }
 
 //     // Check if user exists
 //     const user = await User.findById(id);
 //     if (!user) {
-//       return res.status(404).json({ success: false, message: 'User not found.' });
+//       return res.status(404).json({ success: false, errors:[ 'User not found.' });
 //     }
 
 //     // Update the role
 //     user.role = role;
 //     await user.save();
 
-//     res.status(200).json({ success: true, message: 'User role updated successfully.' });
+//     res.status(200).json({ success: true, errors:[ 'User role updated successfully.' });
 //   } catch (error) {
 //     console.error(error);
-//     res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+//     res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.', error });
 //   }
 // };

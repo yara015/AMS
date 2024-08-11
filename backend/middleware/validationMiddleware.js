@@ -8,8 +8,11 @@ exports.validateRegister = [
   body('role').isIn(['admin', 'tenant', 'manager']).withMessage('Invalid role.'),
   (req, res, next) => {
     const errors = validationResult(req);
+    const x=errors.array().map((error)=>{
+      return error.msg;
+    });
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
+      return res.status(400).json({ success: false, errors:x });
     }
     next();
   }
@@ -21,8 +24,11 @@ exports.validateLogin = [
   body('password').notEmpty().withMessage('Password is required.'),
   (req, res, next) => {
     const errors = validationResult(req);
+    const x=errors.array().map((error)=>{
+      return error.msg;
+    });
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
+      return res.status(400).json({ success: false, errors:x });
     }
     next();
   }
