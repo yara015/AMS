@@ -7,7 +7,7 @@ import Register from './Pages/Register';
 import { UserContextProvider } from './Context/UserContext';
 import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
-import LandingPage from './pages/LandingPage';
+import LandingPage from './Pages/LandingPage';
 function App() {
     return (
         <UserContextProvider>
