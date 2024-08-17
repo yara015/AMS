@@ -60,14 +60,69 @@ const LandingPage = () => {
       <div style={{ height: "4rem" }}></div> {/* Spacer div ensures that content is pushed below the fixed header */}
 
  {/* Hero Section with About Us */}
- <div className="hero-section" style={{ position: "relative", width: "100%", marginTop: "54%", height: "calc(100vh - 4rem)", backgroundImage: "url('../images/GatedComm.jpg')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", zIndex: "5" }}>
+ {/* <div className="hero-section" style={{ position: "relative", width: "100%", marginTop: "40%", height: "calc(100vh - 4rem)", backgroundImage: "url('../images/GatedComm.jpg')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", zIndex: "5" }}>
         <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", background: "linear-gradient(to left, rgba(43, 56, 68, 0), #2b3844)", zIndex: "1" }}></div>
         <div className="content-left" style={{ right:"20%",position: "relative", padding: "2rem", borderRadius: "10px", zIndex: "2", maxWidth: "50%", color: "#ffffff", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.7)", fontSize: "1.2rem", background: "rgba(0, 0, 0, 0.5)" }}>
           <h2 style={{ fontSize: "2rem" }}>About Us</h2>
           <p style={{justifyContent:'left'}}>Welcome to our premier apartment community, where excellence meets elegance. Our apartments are designed with you in mind, offering the perfect balance of luxury and practicality. Each unit features stunning layouts, high-end finishes, and breathtaking views, ensuring you experience the best in apartment living.</p>
           <p>Enjoy an array of top-tier amenities, from state-of-the-art fitness centers to beautifully landscaped courtyards, all curated to enhance your lifestyle. Located in vibrant neighborhoods, our apartments offer the ideal combination of convenience and tranquility. Join us and elevate your living experience to new heights.</p>
         </div>
-      </div>
+      </div> */}
+      <div className="hero-section" style={{ position: "relative", width: "100%", marginTop: "40%", height: "calc(100vh - 4rem)", backgroundImage: "url('../images/GatedComm.jpg')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", zIndex: "5" }}>
+  <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", background: "linear-gradient(to left, rgba(43, 56, 68, 0), #2b3844)", zIndex: "1" }}></div>
+  <div className="content-left" style={{ right: "10%", position: "relative", padding: "2rem", borderRadius: "10px", zIndex: "2", maxWidth: "50%", color: "#ffffff", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.7)", fontSize: "1.2rem", background: "rgba(0, 0, 0, 0.5)" }}>
+    <h2 style={{ fontSize: "2rem" }}>About Us</h2>
+    <p style={{ justifyContent: 'left' }}>Welcome to our premier apartment community, where excellence meets elegance. Our apartments are designed with you in mind, offering the perfect balance of luxury and practicality. Each unit features stunning layouts, high-end finishes, and breathtaking views, ensuring you experience the best in apartment living.</p>
+    <p>Enjoy an array of top-tier amenities, from state-of-the-art fitness centers to beautifully landscaped courtyards, all curated to enhance your lifestyle. Located in vibrant neighborhoods, our apartments offer the ideal combination of convenience and tranquility. Join us and elevate your living experience to new heights.</p>
+  </div>
+</div>
+
+<style>{`
+@media (max-width: 768px) {
+  .hero-section {
+    height: auto;
+    margin-top: 20%;
+  }
+
+  .content-left {
+    max-width: 80%;
+    padding: 1.5rem;
+    font-size: 1rem;
+    right: 5%;
+  }
+
+  .hero-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-section p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: auto;
+    margin-top: 10%;
+  }
+
+  .content-left {
+    max-width: 90%;
+    padding: 1rem;
+    font-size: 0.9rem;
+    right: 2%;
+  }
+
+  .hero-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .hero-section p {
+    font-size: 0.8rem;
+  }
+}
+`}</style>
+
 
       {/* Slideshow Section */}
       <div className="slideshow-container" style={{ position: "relative", maxWidth: "100%", margin: "2rem auto", overflow: "hidden", zIndex: "1" }}>

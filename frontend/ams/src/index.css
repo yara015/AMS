@@ -67,12 +67,13 @@ button:focus-visible {
   }
 } */
 /* Reset some basic elements to ensure consistency across browsers */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif; /* Use a basic font for consistency */
+  font-family: 'Poppins', sans-serif; /* Use a basic font for consistency */
 }
 
 html, body {
@@ -80,6 +81,7 @@ html, body {
   font-size: 16px;
   line-height: 1.5;
   color: #333; /* Default text color */
+  overflow-x: hidden;
 }
 
 body {
@@ -87,9 +89,9 @@ body {
 }
 
 /* Provide some spacing for content within the body */
-main {
+/* main {
   padding: 2rem;
-}
+} */
 
 /* Basic styling for links */
 a {
