@@ -1,3 +1,4 @@
+import { alignProperty } from "@mui/material/styles/cssUtils";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -39,9 +40,10 @@ const LandingPage = () => {
 
   return (
     <div style={{ fontFamily: "'Poppins', sans-serif", background: "#2b3844", margin: "0", padding: "0", overflowX: "hidden", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      
+    
       {/* Top Buttons */}
       <div style={{ background: "#2b3844", display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "1rem", position: "fixed", top: "0", width: "100%", zIndex: "10" }}>
+      <h1 style={{marginRight:"20rem", color:"white" ,lineHeight:"1rem"}}>Hitech Apartments</h1>
         <button
           onClick={() => navigate('/login')}
           style={{ backgroundColor: "#2980b9", color: "#ecf0f1", padding: "0.5rem 1rem", border: "none", borderRadius: "5px", marginRight: "1rem", cursor: "pointer", fontWeight: "bold" }}

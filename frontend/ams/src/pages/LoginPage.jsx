@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { DataContext } from '../Context/UserContext';
 import { URL } from '../url';
-
+import api from '../utils/api';
 export default function LoginPage() {
     const navigate = useNavigate();
     const { setData, setToken } = useContext(DataContext);
@@ -19,13 +19,13 @@ export default function LoginPage() {
         };
 
         try {
-            const response = await axios.post(`${URL}/auth/login`, data);
+            const response = await api.post(`/auth/login`, data);
             console.log(response.data);
-            setData(response.data.data);
+            setData(response.data.user);
             setToken(response.data.token);
             localStorage.setItem('token', response.data.token);
-            localStorage.setItem('userData', JSON.stringify(response.data.data));
-            navigate('/home');
+            localStorage.setItem('userData', JSON.stringify(response.data.user));
+            navigate('/Admin');
             window.location.reload(true);
             console.log('Login Successful');
             alert('Login Successful');

@@ -9,12 +9,9 @@ const nodemailer = require('nodemailer');
 const { env } = require('process');
 require('dotenv').config();
 
-
-
-
-// Helper function to generate JWT
+//Helper function to generate JWT
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' } );
 };
 
 // Helper function to send emails
@@ -116,7 +113,7 @@ exports.login = async (req, res) => {
     // Generate a token
     const token = generateToken(user);
 
-    res.status(200).json({ success: true, errors:[ 'Logged in successfully.'], token });
+    res.status(200).json({ success: true, errors:[ 'Logged in successfully.'],user, token });
 
     sendEmail(
       email,
@@ -151,10 +148,10 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { name, email, password } = req.body;
+    const { name,phoneNumber,email} = req.body;
 
     // Validate input data
-    if (!name && !email && !password) {
+    if (!name && !email) {
       return res.status(400).json({ success: false, errors:[ 'At least one field is required to update.'] });
     }
 
@@ -162,7 +159,8 @@ exports.updateProfile = async (req, res) => {
     const updateData = {};
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (password) updateData.password = await bcrypt.hash(password, 10);
+    if (phoneNumber) updateData.phoneNumber = email;
+   // if (password) updateData.password = await bcrypt.hash(password, 10);
 
     // Update user profile
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
@@ -183,7 +181,9 @@ exports.changePassword = async (req, res) => {
   try {
     const userId = req.user.id;
     const { oldPassword, newPassword } = req.body;
-
+    if(!newPassword.Length>=6){
+      return res.status(400).json({ success: false, errors:[ 'Password must be at least 6 characters.'] });
+    }
     // Validate input data
     if (!oldPassword || !newPassword) {
       return res.status(400).json({ success: false, errors:[ 'Both old and new passwords are required.'] });
