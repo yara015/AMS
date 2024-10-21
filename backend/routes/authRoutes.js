@@ -43,13 +43,17 @@ router.post('/forgot-Password',
   authController.forgotPassword
 );
 router.post('/reset-password', 
-
   authController.resetPassword
 );
 router.get('/getAllusers', 
   authMiddleware.verifyToken, 
-  authMiddleware.isAdmin,
+  // authMiddleware.isAdmin,
   authController.getAllUsers
+);
+router.get('/getUser/:id', 
+  authMiddleware.verifyToken, 
+  // authMiddleware.isAdmin,
+  authController.getUserById
 );
 router.put('/delete-user', 
   authMiddleware.verifyToken, 

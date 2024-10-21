@@ -313,14 +313,34 @@ exports.resetPassword = async (req, res) => {
 // Admin: Get all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select('-password');
-    res.status(200).json({ success: true, users });
+    // const users = await User.find().select('-password');
+    // res.status(200).json({ success: true, users });
+    const { page = 1, limit = 10 } = req.query; // Default to page 1, 10 users per page
+    const skip = (page - 1) * limit;
+    const users = await User.find().select('-password').limit(Number(limit)).skip(skip);
+    const totalUsers = await User.countDocuments(); // Count total number of users
+
+    res.status(200).json({ success: true, users, totalUsers });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
   }
 };
-
+exports.getUserById = async (req, res) => {
+  try {
+    const {id}=req.params;
+     const user= await User.findOne({_id:id});
+     console.log(user);
+     if (!user) {
+      return res.status(400).json({ success: false, errors:[ 'User not found.' ]});
+    }
+   
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
+  }
+};
 // Admin: Delete a user
 exports.deleteUser = async (req, res) => {
   try {

@@ -1,13 +1,13 @@
 import React, { useState,useContext } from 'react';
-import { NotificationImportant, AccountCircle, People, Close} from '@mui/icons-material';
+import { NotificationImportant, AccountCircle, People, Close, ViewModuleSharp} from '@mui/icons-material';
 import { IconButton, Dialog, DialogTitle, DialogContent, Menu, MenuItem,TextField, Button, Container, Typography, Grid,List, ListItem, ListItemText, } from '@mui/material'
 // import { IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { DataContext } from '../../Context/UserContext';
-import Profile from './Profile';
-import UpdateFamilyDialog from '../Tenant/updatefamily';
+import Profile from '../Admin/Profile';
+import UpdateFamilyDialog from './updatefamily';
 import api from '../../utils/api';
-const Dashboard = () => {
+const TenantDashboard = () => {
   const navigate=useNavigate();
   const { user} = useContext(DataContext);
   console.log("User object:", user);
@@ -90,52 +90,15 @@ const handleChangePasswordSubmit = async (event) => {
       width: '100%',
     },
     sidebar: {
-    width: '300px',
-    backgroundColor: '#004d40',
-    color: 'white',
-    padding: '20px',
-    position: 'fixed',
-    height: '100vh',
-    overflowY: 'auto',
-    transition: 'background-color 0.3s',
-  },
-  // navItem: {
-  //   margin: '15px 0',
-  //   position: 'relative',
-  // },
-  // navLink: {
-  //   color: 'white',
-  //   textDecoration: 'none',
-  //   fontSize: '16px',
-  //   display: 'flex',
-  //   alignItems: 'center',
-  //   padding: '10px 15px',
-  //   borderRadius: '4px',
-  //   transition: 'background-color 0.3s',
-  // },
-  // navLinkHover: {
-  //   backgroundColor: '#00796b',
-  // },
-  dropdownMenu: {
-    backgroundColor: '#004d40',
-    color: 'white',
-    borderRadius: '4px',
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-    display: 'none',
-  },
-  dropdownMenuShow: {
-    display: 'block',
-  },
-  dropdownItem: {
-    padding: '10px 15px',
-    textDecoration: 'none',
-    color: 'white',
-    display: 'block',
-    transition: 'background-color 0.3s',
-  },
-  dropdownItemHover: {
-    backgroundColor: '#00796b',
-  },
+      width: '300px',
+      backgroundColor: '#004d40',
+      color: 'white',
+      padding: '20px',
+      position: 'fixed',
+      height: '100vh',
+      overflowY: 'scroll',
+      overflowX: 'hidden',
+    },
     logo: {
       textAlign: 'center',
       marginBottom: '20px',
@@ -162,7 +125,35 @@ const handleChangePasswordSubmit = async (event) => {
     navLinkHover: {
       backgroundColor: '#00796b',
     },
-  
+   
+    dropdownMenu: {
+   //  position: 'absolute',
+      left: '240px',
+      top: '0',
+      backgroundColor: '#004d40',
+      color: 'white',
+      minWidth: '200px',
+      zIndex: 1002,
+      borderRadius: '4px',
+      boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
+      display: 'none',
+    },
+    dropdownMenuShow: {
+      display: 'block',
+      zIndex: 1002,
+    },
+    dropdownItem: {
+      position: 'relative',
+      padding: '10px 15px',
+      textDecoration: 'none',   
+      color: 'white',
+      display: 'block',
+      transition: 'background-color 0.3s ease',
+      zIndex: 1002,
+    },
+    dropdownItemHover: {
+      backgroundColor: '#00796b',
+    },
     mainContent: {
       marginLeft: '300px',
       padding: '20px',
@@ -322,7 +313,7 @@ const handleChangePasswordSubmit = async (event) => {
                     </div>
             <h2>Hitech Apartments</h2>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton style={{ color: 'white' }} onClick={() => navigate('/Admin/notifications')}>
+          <IconButton style={{ color: 'white' }} onClick={() => navigate('/notifications')}>
             <NotificationImportant />
           </IconButton>
           <IconButton style={{ color: 'white' }} onClick={() => navigate('/Admin/getAllUsers')}>
@@ -340,6 +331,8 @@ const handleChangePasswordSubmit = async (event) => {
             onClose={handleProfileMenuClose}
           >
             <MenuItem onClick={() => handleDialogOpen(setOpenProfile)}>view profile</MenuItem>
+            <MenuItem onClick={() => handleDialogOpen(setOpenFamilyInfo)}>Update Family Info</MenuItem>
+            <MenuItem onClick={() => handleDialogOpen(setOpenUploadDocuments)}>Upload Documents</MenuItem>
             <MenuItem onClick={() => handleDialogOpen(setOpenChangePassword)}>Change Password</MenuItem>
             <MenuItem onClick={() => handleDialogOpen(setOpenUpdateProfile)}>Update Profile</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -458,6 +451,32 @@ const handleChangePasswordSubmit = async (event) => {
 </DialogContent>
 
 </Dialog>
+
+      <Dialog open={openFamilyInfo} onClose={() => handleDialogClose(setOpenFamilyInfo)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          Update Family Info
+          <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenFamilyInfo)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+         
+          {/* Add content for updating family info */}
+          <UpdateFamilyDialog open={openFamilyInfo} onClose={handleDialogClose}/>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openUploadDocuments} onClose={() => handleDialogClose(setOpenUploadDocuments)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          Upload Documents
+          <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenUploadDocuments)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {/* Add content for uploading documents */}
+        </DialogContent>
+      </Dialog>
       <Dialog open={openChangePassword} onClose={() => handleDialogClose(setOpenChangePassword)} maxWidth="md" fullWidth>
         <DialogTitle>
           Change Password
@@ -506,71 +525,10 @@ const handleChangePasswordSubmit = async (event) => {
           <Profile />
         </DialogContent>
       </Dialog>
-        <div style={styles.cardsContainer}>
-          <div style={{ ...styles.card, ...styles.purple }}>
-            <p>Total Flats</p>
-            <h2>2</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.blue }}>
-            <p>Total Allotment</p>
-            <h2>0</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.yellow }}>
-            <p>Total Bills</p>
-            <h2>0</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.red }}>
-            <p>Total Visitor</p>
-            <h2>1</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.orange }}>
-            <p>Unresolved Complaints</p>
-            <h2>0</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.darkRed }}>
-            <p>In Progress Complaints</p>
-            <h2>1</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.green }}>
-            <p>Resolved Complaints</p>
-            <h2>0</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.darkGrey }}>
-            <p>Total Complaints</p>
-            <h2>1</h2>
-          </div>
-          <div style={{ ...styles.card, ...styles.tenantCard }}>
-            <p>Total Tenants</p>
-            <h2>10</h2>
-          </div>
-        </div>
-        <div style={styles.visitorReport}>
-          <h3>Visitor Report</h3>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Date</th>
-                <th style={styles.th}>Name</th>
-                <th style={styles.th}>Purpose</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={styles.td}>2024-08-01</td>
-                <td style={styles.td}>John Doe</td>
-                <td style={styles.td}>Maintenance</td>
-              </tr>
-              <tr>
-                <td style={styles.td}>2024-08-05</td>
-                <td style={styles.td}>Jane Smith</td>
-                <td style={styles.td}>Delivery</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        
       </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default TenantDashboard;

@@ -425,8 +425,9 @@ exports.getVacancies = async (req, res) => {
 exports.updateFamilyInfo = async (req, res) => {
     try {
       const tenantId = req.user.id; // Get the tenant ID from the authenticated user
-      const { family } = req.body;
-  
+   
+      const  family  = req.body;
+     
       // Validate input data
       if (!family || !Array.isArray(family)) {
         return res.status(400).json({ success: false, message: 'Family information is required and should be an array.' });
@@ -440,11 +441,11 @@ exports.updateFamilyInfo = async (req, res) => {
   
       user.familyMembers = family;
       await user.save();
-  
-      res.status(200).json({ success: true, message: 'Family information updated successfully.', family});
+      res.status(200).json({ success: true, errors:[ 'Family information updated successfully.'], family});
+     
     } catch (error) {
       console.error(error);
-      res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+      res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
     }
   };
 // Assign a tenant to a flat (Admin use only)

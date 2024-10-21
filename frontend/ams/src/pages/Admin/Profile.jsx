@@ -21,33 +21,7 @@ const Profile = () => {
       const { name, value } = e.target;
       setProfile({ ...profile, [name]: value });
     };
-    // const handleChangePasswordOpen = () => {
-    //     setOpenChangePassword(true);
-    // };
-
-    // const handleChangePasswordClose = () => {
-    //     setOpenChangePassword(false);
-    // };
-
-    // const handleChangePasswordSubmit = async (event) => {
-    //     event.preventDefault();
-
-    //     const formData = new FormData(event.target);
-    //     const data = {
-    //         oldPassword: formData.get('oldPassword'),
-    //         newPassword: formData.get('newPassword'),
-    //     };
-
-    //     try {
-    //         const response = await api.put(`${URL}/auth/change-password`, data);
-    //         console.log(response.data);
-    //         alert("Password changed successfully!");
-    //         handleChangePasswordClose(); // Close dialog on success
-    //     } catch (error) {
-    //         console.error('There was an error changing the password!', error);
-    //         alert(error.response.data.errors[0]);
-    //     }
-    // };
+   
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -137,46 +111,6 @@ const Profile = () => {
           </Grid>
         </form>
       </Paper>
-      {/* <Dialog open={openChangePassword} onClose={handleChangePasswordClose} maxWidth="xs" fullWidth>
-                <DialogTitle>
-                    Change Password
-                    <IconButton
-                        style={{ position: 'absolute', right: '16px', top: '16px' }}
-                        onClick={handleChangePasswordClose}
-                    >
-                        <Close />
-                    </IconButton>
-                </DialogTitle>
-                <DialogContent>
-                    <form onSubmit={handleChangePasswordSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Old Password"
-                                    name="oldPassword"
-                                    type="password"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="New Password"
-                                    name="newPassword"
-                                    type="password"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary">
-                                    Change Password
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </DialogContent>
-            </Dialog> */}
     </Container>
   );
 };

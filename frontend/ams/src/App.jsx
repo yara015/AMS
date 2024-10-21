@@ -9,7 +9,11 @@ import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
 import LandingPage from './Pages/LandingPage';
 import Dashboard from './Pages/Admin/Dashboard';
+import TenantDashboard from './Pages/Tenant/tenantDashboard';
 // import Profile from './Pages/Admin/Profile';
+import UsersList from './Pages/Admin/getAllUsers';
+import NotificationsList from './Pages/Admin/Notifications';
+// import Dashboard from './Pages/Admin/Dashboard';
 function App() {
     return (
         <UserContextProvider>
@@ -20,8 +24,12 @@ function App() {
                 <Route path="/login/forgot-password" element={<ForgotPassword/>}/>
                 <Route path="/login/reset-password" element={<ResetPassword/>}/>
                 <Route path="/Admin" element={<Dashboard />} />
+                <Route path="/Tenant" element={<TenantDashboard />} />
+
                 {/* <Route path="/Profile" element={<Profile />} /> */}
                 {/* Add more routes here */}
+                <Route path="/Admin/getAllUsers" element={<UsersList />} />
+                <Route path="/Admin/notifications" element={<NotificationsList />} />
             </Routes>
         </UserContextProvider>
     );
