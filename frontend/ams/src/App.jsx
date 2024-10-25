@@ -7,31 +7,40 @@ import Register from './Pages/Register';
 import { UserContextProvider } from './Context/UserContext';
 import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
-import LandingPage from './Pages/LandingPage';
+import LandingPage from './pages/LandingPage';
 import Dashboard from './Pages/Admin/Dashboard';
 import TenantDashboard from './Pages/Tenant/tenantDashboard';
+import AnnouncementsList from './pages/Tenant/Announcements';
 // import Profile from './Pages/Admin/Profile';
 import UsersList from './Pages/Admin/getAllUsers';
 import NotificationsList from './Pages/Admin/Notifications';
+import Navbar from './Pages/Navbar';
+import Home from './pages/Home';
+import Footer from './pages/Footer';
 // import Dashboard from './Pages/Admin/Dashboard';
 function App() {
     return (
+        <div>
         <UserContextProvider>
+            <Navbar/>
             <Routes>
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/land" element={<LandingPage />} />
+                <Route path="/" element={<Home />} />
                 <Route exact path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login/forgot-password" element={<ForgotPassword/>}/>
                 <Route path="/login/reset-password" element={<ResetPassword/>}/>
                 <Route path="/Admin" element={<Dashboard />} />
                 <Route path="/Tenant" element={<TenantDashboard />} />
-
+                <Route path="/announcements" element={<AnnouncementsList />} />
                 {/* <Route path="/Profile" element={<Profile />} /> */}
                 {/* Add more routes here */}
                 <Route path="/Admin/getAllUsers" element={<UsersList />} />
                 <Route path="/Admin/notifications" element={<NotificationsList />} />
             </Routes>
+            <Footer/>
         </UserContextProvider>
+        </div>
     );
 }
 

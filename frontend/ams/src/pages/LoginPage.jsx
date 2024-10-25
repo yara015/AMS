@@ -41,6 +41,7 @@ export default function LoginPage() {
             <style>{`
                 .container {
                     height: 100vh;
+                    width : 100vh;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -133,11 +134,11 @@ export default function LoginPage() {
                     margin: 0;
                 }
 
-                .footer {
-                    font-size: 0.9rem;
-                    color: #777;
-                    margin-top: 1rem;
-                }
+                // .footer {
+                //     font-size: 0.9rem;
+                //     color: #777;
+                //     margin-top: 1rem;
+                // }
 
                 @media (max-width: 576px) {
                     .form-signin {
@@ -153,9 +154,6 @@ export default function LoginPage() {
 
             <Row className="w-100 justify-content-center">
                 <Col xs={12} md={8} lg={6} className="text-center">
-                <div className="logo-section mb-4">
-                        <img src="images/logofinal.png" alt="Logo" width="150" height="150" />
-                    </div>
                     <main className="form-signin">
                         <Form onSubmit={handleSubmit}>
                             <h1 className="text-center h3 mb-3 fw-normal">Login</h1>
@@ -167,12 +165,12 @@ export default function LoginPage() {
                             </FloatingLabel>
                             <Button variant="warning" className="w-100 py-2 mt-3" type="submit">Login</Button>
                             <div className="text-center mt-3">
-                                <Link to='/login/forgot-password' className='text-dark'>forgotpassword</Link>
+                                <Link to='/login/forgot-password' className='text-dark'>Forgot Password?</Link>
                             </div>
                             <div className="text-center mt-3">
                                 <Link to='/register' className='text-dark'>Don't have an account? Register here</Link>
                             </div>
-                            <p className="footer text-center mt-5 mb-3">© 2024</p>
+                            {/* <p className="footer text-center mt-5 mb-3">© 2024</p> */}
                         </Form>
                         {errorMessage && <div className="alert-danger text-center">{errorMessage}</div>}
                     </main>

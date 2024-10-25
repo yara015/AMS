@@ -2,7 +2,7 @@ import { alignProperty } from "@mui/material/styles/cssUtils";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LandingPage = () => {
+const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const LandingPage = () => {
   return (
     <div style={{ fontFamily: "'Poppins', sans-serif", background: "#2b3844", margin: "0", padding: "0", overflowX: "hidden", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
     
-      {/* Top Buttons */}
+      {/* Top Buttons
       <div style={{ background: "#2b3844", display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "1rem", position: "fixed", top: "0", width: "100%", zIndex: "10" }}>
       <h1 style={{marginRight:"20rem", color:"white" ,lineHeight:"1rem"}}>Hitech Apartments</h1>
         <button
@@ -72,10 +72,10 @@ const LandingPage = () => {
         >
           Register
         </button>
-      </div>
+      </div> */}
 
       {/* Spacer for Top Buttons */}
-      <div style={{ height: "3rem" }}></div> {/* Spacer div ensures that content is pushed below the fixed header */}
+      <div style={{ height: "4rem" }}></div> {/* Spacer div ensures that content is pushed below the fixed header */}
 
  {/* Hero Section with About Us */}
  {/* <div className="hero-section" style={{ position: "relative", width: "100%", marginTop: "40%", height: "calc(100vh - 4rem)", backgroundImage: "url('../images/GatedComm.jpg')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", zIndex: "5" }}>
@@ -187,4 +187,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default Home;
