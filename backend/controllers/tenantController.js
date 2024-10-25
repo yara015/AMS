@@ -1,5 +1,4 @@
 // controllers/tenantController.js
-
 const User = require('../models/User');
 const Request = require('../models/Request');
 const Notification = require('../models/Notification');
@@ -213,6 +212,31 @@ exports.makePayment = async (req, res) => {
 };
 
 // Upload a document (e.g., proof of payment)
+exports.addDocuments=async(req,res)=>{
+  try {
+    // Check if a file was uploaded
+    const tenantId = req.user.id;
+    const  documents  = req.body;
+     
+      // Validate input data
+      if (!documents || !Array.isArray(documents)) {
+        return res.status(400).json({ success: false, message: 'documents information is required and should be an array.' });
+      }
+    const user = await User.findById( tenantId );
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'user not found for the current tenant.' });
+      }
+  
+      user.documents = documents;
+      await user.save();
+      res.status(200).json({ success: true, errors:[ 'document added information updated successfully.'], documents});
+     
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, errors:[ 'Server error. Please try again later.'], error });
+    }
+   
+}
 exports.uploadDocument = async (req, res) => {
   try {
     const tenantId = req.user.id; // Get the tenant ID from the authenticated user
@@ -222,7 +246,7 @@ exports.uploadDocument = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'File is required.' });
     }
-
+    
     const newDocument = new Document({
       tenant: tenantId,
       title,

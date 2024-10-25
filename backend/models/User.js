@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
    }], // Names of family members
   phoneNumber: { type: String },
   emergencyContact: { type: String },
-  documents: [{ type: String }] // Paths or URLs to uploaded documents
+  documents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }] // Paths or URLs to uploaded documents
 });
 
 module.exports = mongoose.model('User', UserSchema);

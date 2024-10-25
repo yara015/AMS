@@ -10,6 +10,7 @@ const {
   getRequestDetails,
   getPaymentHistory,
   uploadDocument,
+  addDocuments,
   getTenantDocuments,
   deleteDocument,
   getForums,
@@ -47,7 +48,7 @@ router.get('/notifications', verifyToken, isTenant, getTenantNotifications);
 router.get('/payments', verifyToken, isTenant, getPaymentHistory);
 router.post('/payments', verifyToken, isTenant, createPayment);
 
-router.post('/documents', verifyToken, isTenant,upload.single('file'), uploadDocument);
+router.post('/documents', verifyToken, isTenant,upload.single('file'), addDocuments);
 router.get('/documents', verifyToken,isTenant,getTenantDocuments);
 router.delete('/documents/:id', verifyToken,isTenant, deleteDocument);
 

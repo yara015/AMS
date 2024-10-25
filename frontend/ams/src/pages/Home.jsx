@@ -75,7 +75,7 @@ const Home = () => {
       </div> */}
 
       {/* Spacer for Top Buttons */}
-      <div style={{ height: "4rem" }}></div> {/* Spacer div ensures that content is pushed below the fixed header */}
+      <div style={{ height: "10rem" }}></div> {/* Spacer div ensures that content is pushed below the fixed header */}
 
  {/* Hero Section with About Us */}
  {/* <div className="hero-section" style={{ position: "relative", width: "100%", marginTop: "40%", height: "calc(100vh - 4rem)", backgroundImage: "url('../images/GatedComm.jpg')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", zIndex: "5" }}>

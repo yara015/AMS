@@ -4,10 +4,10 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './Pages/LoginPage';
 import Register from './Pages/Register';
-import { UserContextProvider } from './Context/UserContext';
+import { UserContextProvider } from './context/UserContext';
 import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
-import LandingPage from './pages/LandingPage';
+import LandingPage from './Pages/LandingPage';
 import Dashboard from './Pages/Admin/Dashboard';
 import TenantDashboard from './Pages/Tenant/tenantDashboard';
 import AnnouncementsList from './pages/Tenant/Announcements';
@@ -24,17 +24,14 @@ function App() {
         <UserContextProvider>
             <Navbar/>
             <Routes>
-                <Route path="/land" element={<LandingPage />} />
                 <Route path="/" element={<Home />} />
                 <Route exact path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login/forgot-password" element={<ForgotPassword/>}/>
                 <Route path="/login/reset-password" element={<ResetPassword/>}/>
-                <Route path="/Admin" element={<Dashboard />} />
-                <Route path="/Tenant" element={<TenantDashboard />} />
+                <Route path="/Admin" element={<Home />} />
+                <Route path="/Tenant" element={<Home />} />
                 <Route path="/announcements" element={<AnnouncementsList />} />
-                {/* <Route path="/Profile" element={<Profile />} /> */}
-                {/* Add more routes here */}
                 <Route path="/Admin/getAllUsers" element={<UsersList />} />
                 <Route path="/Admin/notifications" element={<NotificationsList />} />
             </Routes>

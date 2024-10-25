@@ -3,8 +3,8 @@ import { NotificationImportant, AccountCircle, People, Close} from '@mui/icons-m
 import { IconButton, Dialog, DialogTitle, DialogContent, Menu, MenuItem,TextField, Button, Container, Typography, Grid,List, ListItem, ListItemText, } from '@mui/material'
 // import { IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { DataContext } from '../../Context/UserContext';
-import Profile from './Profile';
+import { DataContext } from '../../context/UserContext';
+import Profile from '../Profile';
 import UpdateFamilyDialog from '../Tenant/updatefamily';
 import api from '../../utils/api';
 const Dashboard = () => {
@@ -346,13 +346,13 @@ const handleChangePasswordSubmit = async (event) => {
           </Menu>
         </div>
       </header>
-      <Dialog open={openProfile} onClose={() => handleDialogClose(setOpenProfile)} maxWidth="md" fullWidth>
-  <DialogTitle>
-    View Profile
-    <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenProfile)}>
-      <Close />
-    </IconButton>
-  </DialogTitle>
+  <Dialog open={openProfile} onClose={() => handleDialogClose(setOpenProfile)} maxWidth="md" fullWidth>
+    <DialogTitle>
+      View Profile
+      <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenProfile)}>
+        <Close />
+      </IconButton>
+    </DialogTitle>
   <DialogContent>
   {user ? (
     <form>

@@ -2,9 +2,10 @@ import React, { useState, useContext } from 'react';
 import { Form, Button, Container, Row, Col, FloatingLabel } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { DataContext } from '../Context/UserContext';
+import { DataContext } from '../context/UserContext';
 import { URL } from '../url';
 import api from '../utils/api';
+
 export default function LoginPage() {
     const navigate = useNavigate();
     const { setData, setToken } = useContext(DataContext);
@@ -25,7 +26,12 @@ export default function LoginPage() {
             setToken(response.data.token);
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userData', JSON.stringify(response.data.user));
-            navigate('/Admin');
+            const role = response.data.user.role;
+            if (role === 'admin') {
+                navigate('/admin');
+            } else if (role === 'tenant') {
+                navigate('/tenant');
+            }
             window.location.reload(true);
             console.log('Login Successful');
             alert('Login Successful');

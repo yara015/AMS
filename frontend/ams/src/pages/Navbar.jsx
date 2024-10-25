@@ -1,7 +1,74 @@
-import React from 'react';
+import React, { useContext ,useState} from 'react';
 import { Link } from 'react-router-dom';
-
+import { DataContext } from '../context/UserContext'
+import { Form } from 'react-bootstrap';
+import { NotificationImportant, AccountCircle, People, Close} from '@mui/icons-material';
+import { IconButton, Dialog, DialogTitle, DialogContent, Menu, MenuItem,TextField, Button, Container, Typography, Grid,List, ListItem, ListItemText, } from '@mui/material'
+// import { IconButton } from '@mui/material';
+import UpdateFamilyDialog from './Tenant/updatefamily';
+import { useNavigate } from 'react-router-dom';
+import Profile from './Profile';
+import Documents from './Tenant/Documents';
 const Navbar = () => {
+  const navigate=useNavigate();
+  const { user, setUser } = useContext(DataContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isLoggedIn = !!user;  // Check if user is logged in
+  const isAdmin = user?.role === 'admin';
+  const isTenant = user?.role === 'tenant';
+  const [openProfile, setOpenProfile] = useState(false);
+  const [openFamilyInfo, setOpenFamilyInfo] = useState(false);
+  const [openUploadDocuments, setOpenUploadDocuments] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+  const [openUpdateProfile, setOpenUpdateProfile] = useState(false);
+
+  const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleProfileMenuClose = () => setAnchorEl(null);
+
+  const handleDialogOpen = (dialogSetter) => {
+    dialogSetter(true);
+    handleProfileMenuClose();
+  };
+
+  const handleDialogClose = (dialogSetter) => dialogSetter(false);
+
+  const handleLogout = async () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userData');
+      setUser(null);
+      handleProfileMenuClose();
+      navigate('/');
+  };
+
+  const handleChangePasswordSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = {
+      oldPassword: formData.get('oldPassword'),
+      newPassword: formData.get('newPassword'),
+    };
+
+    try {
+      await api.put(`/auth/change-password`, data);
+      alert("Password changed successfully!");
+      handleDialogClose(setOpenChangePassword);
+    } catch (error) {
+      alert(error.response.data.errors[0]);
+    }
+  };
+
+  const handleLoginToggle = () => {
+    if (isLoggedIn) {
+      // Logout: clear user data in context and local storage
+      setUser(null);
+      localStorage.removeItem("userData");
+      localStorage.removeItem("token");
+    } else {
+      // Redirect to login page or handle login action
+      window.location.href = '/login';
+    }
+  };
+
   const navbarStyles = {
     backgroundColor: '#2b3844',
     color: 'white',
@@ -16,103 +83,277 @@ const Navbar = () => {
     justifyContent: 'space-between',
     alignItems: 'center',
   };
-
-  const containerStyles = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    padding: '0 1rem',
+  const styles = {
+    mainContent: {
+      padding: '20px',
+      backgroundColor: '#f4f4f4',
+      minHeight: '100vh',
+      overflowY: 'auto',
+      width:'100vh'
+    },
+    navbar: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px 20px',
+      backgroundColor: '#004d40',
+      color: 'white',
+      position: 'fixed',
+      height:'4rem',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1,
+    },
+    dialogTitle: {
+      position: 'relative',
+    },
+    closeButton: {
+      position: 'absolute',
+      right: '16px',
+      top: '16px',
+    },
   };
 
-  const logoContainerStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    justifyContent: 'flex-start',
-  };
-
-  const logoImgStyles = {
-    height: '3.5rem',
-    width: '3.5rem',
-    objectFit: 'contain',
-    borderRadius: '50%',
-  };
-
-  const companyNameStyles = {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-  };
-
-  const navLinksContainerStyles = {
-    display: 'flex',
-    justifyContent: 'center',
-    flex: 1,
-    gap: '2rem',
-    fontSize: '1rem',
-    fontWeight: '500',
-  };
-
-  const navLinkStyles = {
-    color: 'white',
-    textDecoration: 'none',
-    transition: 'color 0.3s',
-  };
-
-  const notificationStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: '1rem',
-  };
-
-  const notificationIconStyles = {
-    height: '1.5rem',
-    width: '1.5rem',
-  };
-
-  const bellIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="24px"
-      viewBox="0 0 24 24"
-      width="24px"
-      fill="white"
-    >
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V9c0-3.07-1.63-5.64-4.5-6.32V2c0-.83-.67-1.5-1.5-1.5S10 1.17 10 2v.68C7.13 3.36 5.5 5.92 5.5 9v7l-1.5 1.5v.5h16v-.5L18 16zM16 17H8v-8c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v8z" />
-    </svg>
-  );
 
   return (
     <nav style={navbarStyles}>
-      <div style={containerStyles}>
-
-        {/* Logo and Company Name aligned to the leftmost */}
-        <div style={logoContainerStyles}>
-          <img src="images/logofinal.png" alt="Logo" style={logoImgStyles} />
-          <span style={companyNameStyles}>Hitech Apartments</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <div>
+          <img src="images/logofinal.png" alt="Logo" style={{ height: '3.5rem', borderRadius: '50%' }} />
+          <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Hitech Apartments</span>
         </div>
 
-        {/* Center Nav links */}
-        <div style={navLinksContainerStyles}>
-        <Link to="./" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Home</Link>
-          <Link to="/announcements" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Announcements</Link>
-          <Link to="/payments" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Payments</Link>
-          <Link to="/requests" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Requests</Link>
-          <Link to="/events" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Events</Link>
-          <Link to="/flats" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Flats</Link>
-          <Link to="/feedbacks" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>Feedbacks</Link>
+        <div style={{ display: 'flex', gap: '2rem' }}>
+          {isLoggedIn && (
+            <>
+            <Link to={isAdmin ? '/admin' : '/tenant'} style={{ color: 'white' }}>Home</Link>
+              <Link to="/announcements" style={{ color: 'white' }}>Announcements</Link>
+              <Link to="/payments" style={{ color: 'white' }}>Payments</Link>
+              <Link to="/requests" style={{ color: 'white' }}>Requests</Link>
+              <Link to="/events" style={{ color: 'white' }}>Events</Link>
+              <Link to="/flats" style={{ color: 'white' }}>Flats</Link>
+              <Link to="/feedbacks" style={{ color: 'white' }}>Feedbacks</Link>
+            </>
+          )}
         </div>
-
-        {/* Notification (bell icon) and Profile aligned to the rightmost */}
-        <div style={notificationStyles}>
-          <Link to="/notifications" style={{ position: 'relative' }}>
-            {bellIcon}
-          </Link>
-          <Link to="/profile" style={navLinkStyles} onMouseOver={e => e.target.style.color = 'gray'} onMouseOut={e => e.target.style.color = 'white'}>My Profile</Link>
+        <div>
+          {isLoggedIn ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {isAdmin && (
+                <>
+                  <IconButton onClick={()=>{navigate('/notifications')}} style={{ color: 'white' }}>
+                    <NotificationImportant />
+                  </IconButton>
+                  <IconButton style={{ color: 'white' }} onClick={() => navigate('/Users')}>
+                    <People />
+                  </IconButton>
+                  <IconButton onClick={handleProfileMenuOpen} style={{ color: 'white' }}>
+                    <AccountCircle />
+                  </IconButton>
+                </>
+              )}
+              {isTenant && (
+                <>
+                  <IconButton onClick={()=>{navigate('/notifications')}} style={{ color: 'white' }}>
+                    <NotificationImportant />
+                  </IconButton>
+                  <IconButton onClick={handleProfileMenuOpen} style={{ color: 'white' }}>
+                    <AccountCircle />
+                  </IconButton>
+                </>
+              )}
+            </div>
+          ) : (
+            <button onClick={handleLoginToggle} style={{ color: 'white' }}>Login</button>
+          )}
         </div>
       </div>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleProfileMenuClose}>
+              <MenuItem onClick={() => handleDialogOpen(setOpenProfile)}>View Profile</MenuItem>
+              {isTenant && (
+                <>
+                <MenuItem onClick={() => handleDialogOpen(setOpenFamilyInfo)}>Update Family Info</MenuItem>
+                <MenuItem onClick={() => handleDialogOpen(setOpenUploadDocuments)}>Upload Documents</MenuItem>
+                <MenuItem onClick={() => handleDialogOpen(setOpenUpdateProfile)}>Update Profile</MenuItem>
+                </>
+              )}
+              <MenuItem onClick={() => handleDialogOpen(setOpenChangePassword)}>Change Password</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
+
+    <Dialog open={openProfile} onClose={() => handleDialogClose(setOpenProfile)} maxWidth="md" fullWidth>
+    <DialogTitle>
+      View Profile
+      <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenProfile)}>
+        <Close />
+      </IconButton>
+    </DialogTitle>
+  <DialogContent>
+  {user ? (
+    <form>
+      <TextField
+        label="Name"
+        
+        value={user.name}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Email"
+        value={user.email}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Role"
+        value={user.role}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Flat"
+        value={user.flat ? user.flat.name : 'Not Assigned'}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Phone Number"
+        value={user.phoneNumber || 'Not Provided'}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Emergency Contact"
+        value={user.emergencyContact || 'Not Provided'}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+    
+      <Typography style={styles.listTitle}>Family Members:</Typography>
+      {user.familyMembers && user.familyMembers.length > 0 ? (
+        <List>
+          {user.familyMembers.map((member, index) => (
+            <TextField
+              key={index}
+              label={`${member.name} (${member.relation})`}
+              value={member.relation}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          ))}
+        </List>
+      ) : (
+        <Typography>No family members listed.</Typography>
+      )}
+
+      <Typography style={styles.listTitle}>Documents:</Typography>
+      {user.documents && user.documents.length > 0 ? (
+        <List>
+          {user.documents.map((doc, index) => (
+            <TextField
+              key={index}
+              label="Document"
+              value={doc}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          ))}
+        </List>
+      ) : (
+        <Typography>No documents uploaded.</Typography>
+      )}
+    </form>
+  ) : (
+    <Typography variant="body1">Loading...</Typography> // Fallback content while user is loading
+  )}
+</DialogContent>
+      </Dialog>
+      
+      <Dialog open={openFamilyInfo} onClose={() => handleDialogClose(setOpenFamilyInfo)} maxWidth="md" fullWidth>
+        <UpdateFamilyDialog/>
+      </Dialog>
+
+      <Dialog open={openUpdateProfile} onClose={() => handleDialogClose(setOpenUpdateProfile)} maxWidth="md" fullWidth>
+        <Profile/>
+      </Dialog>
+
+      <Dialog open={openUploadDocuments} onClose={() => handleDialogClose(setOpenUploadDocuments)}>
+  <DialogTitle>
+    Upload Documents
+    <IconButton style={{ position: 'absolute', right: 8, top: 8 }} 
+    onClick={() => handleDialogClose(setOpenUploadDocuments)} maxWidth="md" fullWidth>
+      <Close />
+    </IconButton>
+  </DialogTitle>
+  <DialogContent>
+    <Documents/>
+  </DialogContent>
+</Dialog>
+
+
+      <Dialog open={openChangePassword} onClose={() => handleDialogClose(setOpenChangePassword)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          Change Password
+          <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenChangePassword)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+        <form onSubmit={handleChangePasswordSubmit}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Old Password"
+                                    name="oldPassword"
+                                    type="password"
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="New Password"
+                                    name="newPassword"
+                                    type="password"
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="primary">
+                                    Change Password
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </DialogContent>
+      </Dialog>
+
     </nav>
   );
 };

@@ -4,9 +4,9 @@ import { TextField, Button, Container, Typography, Grid, Paper } from '@mui/mate
 import { IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import axios from 'axios';
-import { DataContext } from '../../Context/UserContext';
-import { URL } from '../../url';
-import api from '../../utils/api';
+import { DataContext } from '../context/UserContext';
+import { URL } from '../url';
+import api from '../utils/api';
 const Profile = () => {
     const { data} = useContext(DataContext);  
     const [profile, setProfile] = useState({
