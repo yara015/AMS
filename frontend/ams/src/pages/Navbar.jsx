@@ -33,12 +33,24 @@ const Navbar = () => {
   const handleDialogClose = (dialogSetter) => dialogSetter(false);
 
   const handleLogout = async () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userData');
+    try {
+      // Remove user-related data from localStorage
+      await localStorage.removeItem('token');
+      await localStorage.removeItem('userData');
+  
+      // Clear user state
       setUser(null);
+  
+      // Close the profile menu
       handleProfileMenuClose();
+  
+      // Redirect to the home page
       navigate('/');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
+  
 
   const handleChangePasswordSubmit = async (event) => {
     event.preventDefault();
@@ -58,15 +70,13 @@ const Navbar = () => {
   };
 
   const handleLoginToggle = () => {
-    if (isLoggedIn) {
+    if (!isLoggedIn) {
       // Logout: clear user data in context and local storage
-      setUser(null);
-      localStorage.removeItem("userData");
-      localStorage.removeItem("token");
-    } else {
-      // Redirect to login page or handle login action
       window.location.href = '/login';
-    }
+      // setUser(null);
+      // localStorage.removeItem("userData");
+      // localStorage.removeItem("token");
+    } 
   };
 
   const navbarStyles = {
@@ -131,7 +141,7 @@ const Navbar = () => {
               <Link to="/announcements" style={{ color: 'white' }}>Announcements</Link>
               <Link to="/payments" style={{ color: 'white' }}>Payments</Link>
               <Link to="/requests" style={{ color: 'white' }}>Requests</Link>
-              <Link to="/events" style={{ color: 'white' }}>Events</Link>
+              {/* <Link to="/events" style={{ color: 'white' }}>Events</Link> */}
               <Link to="/flats" style={{ color: 'white' }}>Flats</Link>
               <Link to="/feedbacks" style={{ color: 'white' }}>Feedbacks</Link>
             </>

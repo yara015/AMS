@@ -158,7 +158,7 @@ exports.markAsCompleted = async (req, res) => {
       // Find announcements that need to be marked as completed
       const announcementsToUpdate = await Announcement.find({
         date: { $lt: currentDate },
-        status: { $ne: 'completed' }
+        status: { $ne: 'inactive' }
       });
   
       if (announcementsToUpdate.length === 0) {
@@ -168,7 +168,7 @@ exports.markAsCompleted = async (req, res) => {
       // Update announcements to 'completed'
       const updatedAnnouncements = await Announcement.updateMany(
         { _id: { $in: announcementsToUpdate.map(a => a._id) } },
-        { status: 'completed' },
+        { status: 'inactive' },
         { new: true }
       );
   
@@ -186,7 +186,7 @@ exports.markAsCompleted = async (req, res) => {
 // Get completed announcements
 exports.getCompletedAnnouncements = async (req, res) => {
   try {
-    const announcements = await Announcement.find({ status: 'completed' }).sort({ date: -1 });
+    const announcements = await Announcement.find({ status: 'inactive' }).sort({ date: -1 });
     res.status(200).json({ success: true, announcements });
   } catch (error) {
     console.error(error);
