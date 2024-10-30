@@ -19,28 +19,28 @@ exports.getNotifications=async (req, res) => {
 };
 
 // POST a new notification
-exports.createNotification=async (req, res) => {
-    try {
-        const { user, message, type, request } = req.body;
+// exports.createNotification=async (req, res) => {
+//     try {
+//         const { user, message, type, request } = req.body;
 
-        if (!user || !message || !type) {
-            return res.status(400).json({ success: false, message: 'User, message, and type are required.' });
-        }
+//         if (!user || !message || !type) {
+//             return res.status(400).json({ success: false, message: 'User, message, and type are required.' });
+//         }
 
-        const notification = new Notification({
-            user,
-            message,
-            type,
-            request
-        });
+//         const notification = new Notification({
+//             user,
+//             message,
+//             type,
+//             request
+//         });
 
-        await notification.save();
-        res.status(201).json({ success: true, message: 'Notification created successfully.', notification });
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ success: false, message: 'Error creating notification.', error: error.message });
-    }
-};
+//         await notification.save();
+//         res.status(201).json({ success: true, message: 'Notification created successfully.', notification });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(400).json({ success: false, message: 'Error creating notification.', error: error.message });
+//     }
+// };
 //get Notification by id
 exports.getNotificationById= async (req, res) => {
     try {
@@ -89,4 +89,22 @@ exports.markAsRead=async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error. Please try again later.', error: error.message });
     }
 };
+exports.markAsUnRead=async (req, res) => {
+    try {
+        const notification = await Notification.findOneAndUpdate(
+            { _id: req.params.id},
+            { isRead: false },
+            { new: true }
+        );
+        if (!notification) {
+            return res.status(404).json({ success: false, message: 'Notification not found' });
+        }
+
+        res.status(200).json({ success: true, message: 'Notification marked as read', notification });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error. Please try again later.', error: error.message });
+    }
+};
+
 

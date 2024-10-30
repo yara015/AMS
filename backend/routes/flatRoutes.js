@@ -11,7 +11,7 @@ const {
 } = require('../controllers/flatController');
 
 // Create a new flat (Admin use only)
-router.post('/create', verifyToken,isAdmin,createFlat);
+router.post('/', verifyToken,isAdmin,createFlat);
 
 // Get vacant flats
 router.get('/vacancies', verifyToken, getVacancies);
@@ -23,7 +23,7 @@ router.get('/vacancies', verifyToken, getVacancies);
 router.post('/assign', verifyToken,isAdmin, assignTenantToFlat);
 
 // Get all flats (Admin use only)
-router.get('/all', verifyToken,isAdmin, getAllFlats);
+router.get('/', verifyToken,isAdmin, getAllFlats);
 
 // Get flat details by ID (Admin use only)
 router.get('/:id', verifyToken,isAdmin, getFlatDetails);

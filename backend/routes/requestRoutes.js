@@ -25,7 +25,7 @@ router.get('/admin',
 );
 
 // Update request status (Admin only)
-router.put('/:requestId/status', 
+router.put('/:requestId', 
   authMiddleware.verifyToken, 
   authMiddleware.isAdmin, 
   requestController.updateRequestStatus
@@ -40,7 +40,7 @@ router.get('/id/:requestId',
 // Delete a request by ID (Admin only)
 router.delete('/delete/:requestId', 
   authMiddleware.verifyToken, 
-  //authMiddleware.isAdmin, 
+  // authMiddleware.isAdmin, 
   requestController.deleteRequest
 );
 

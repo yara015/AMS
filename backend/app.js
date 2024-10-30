@@ -42,6 +42,17 @@ app.use('/api/feedbacks',feedbackRoutes);
 // Middleware
 
 
+const cron = require('node-cron');
+
+const { markAsCompleted } = require('./controllers/announcementController');
+cron.schedule('0 0 * * *', async () => {
+    try {
+      await markAsCompleted();
+    } catch (error) {
+      console.error('Error while marking announcements as completed:', error);
+    }
+  });
+
 const PORT =  9000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

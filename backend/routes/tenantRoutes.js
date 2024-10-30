@@ -64,10 +64,9 @@ router.get('/vacancies', verifyToken, getVacancies);
 router.put('/family-info', verifyToken, isTenant, updateFamilyInfo);
 
 // Admin routes
-router.get('/tenants',verifyToken,isAdmin,getAllTenants);
+router.get('/',verifyToken,isAdmin,getAllTenants);
 router.get('/tenants/:id', verifyToken, isAdmin, getTenantProfile); // For admin to view tenant profiles
 router.delete('/tenants/:id', verifyToken, isAdmin,deleteTenant);
-router.get('/flats', verifyToken, isAdmin, getAllFlats);
 router.get('/flats/:id', verifyToken, isAdmin, getFlatDetails);
 router.post('/flats/assign', verifyToken, isAdmin, assignTenantToFlat);
 

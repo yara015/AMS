@@ -13,6 +13,7 @@ router.get('/id/:id',verifyToken, notificationController.getNotificationById);
 router.delete('/:id', notificationController.deleteNotificationById);
 
 // Mark a notification as read
-router.patch('/read/:id', notificationController.markAsRead);
+router.put('/read/:id', notificationController.markAsRead);
+router.put('/unread/:id', notificationController.markAsUnRead);
 
 module.exports = router;

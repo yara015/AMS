@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import api from '../../utils/api'; // Adjust path if needed
+import { DataContext } from '../../context/UserContext';
 
 const AnnouncementsList = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '', status: 'active' });
+  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '' });
+  const { user } = useContext(DataContext);
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -26,6 +29,24 @@ const AnnouncementsList = () => {
 
   const handleInputChange = (e) => {
     setNewAnnouncement({ ...newAnnouncement, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    if (!newAnnouncement.title || !newAnnouncement.content) {
+      console.log('Both title and content are required.');
+      return; // Prevent submission if validation fails
+    }
+
+    try {
+      const res = await api.post('/announcements', newAnnouncement);
+      setAnnouncements([...announcements, res.data]);
+      setShowModal(false);
+      setNewAnnouncement({ title: '', content: '' });
+      setError(null); // Clear any previous errors
+    } catch (error) {
+      console.error('Error submitting announcement:', error);
+      setError('Error submitting announcement');
+    }
   };
 
   if (loading) {
@@ -48,27 +69,28 @@ const AnnouncementsList = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
-        padding: '20px'
+        padding: '20px',
       }}
     >
       <div style={{ height: "6.2rem", position: "relative" }}></div>
-      <h2 style={{ textAlign: 'center', fontSize: '28px', marginBottom: '1.5rem' }}>Announcements</h2>
-
-      <button
-  onClick={() => setShowModal(true)}
-  style={{
-    padding: '10px 20px',
-    backgroundColor: '#008CBA',
-    color: 'white',
-    borderRadius: '15px',
-    cursor: 'pointer',
-    marginBottom: '20px',
-    marginRight: '10%', // Shift button a bit to the right
-    alignSelf: 'flex-end', // Aligns the button to the right
-  }}
->
-  Create New Announcement
-</button>
+      <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Announcements</h2>
+      {isAdmin && (
+        <button
+          onClick={() => setShowModal(true)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#008CBA',
+            color: 'white',
+            borderRadius: '15px',
+            cursor: 'pointer',
+            marginBottom: '20px',
+            marginRight: '10%',
+            alignSelf: 'flex-end',
+          }}
+        >
+          Create New Announcement
+        </button>
+      )}
 
       {showModal && (
         <div
@@ -94,6 +116,7 @@ const AnnouncementsList = () => {
             placeholder="Title"
             value={newAnnouncement.title}
             onChange={handleInputChange}
+            required
             style={{ width: '100%', padding: '8px', marginBottom: '10px', borderRadius: '4px' }}
           />
           <textarea
@@ -102,34 +125,14 @@ const AnnouncementsList = () => {
             value={newAnnouncement.content}
             onChange={handleInputChange}
             rows="4"
+            required
             style={{ width: '100%', padding: '8px', borderRadius: '4px', marginBottom: '10px' }}
           ></textarea>
           <div style={{ marginBottom: '10px' }}>
-            {/* <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'white' }}>
-              <input
-                type="radio"
-                name="status"
-                value="active"
-                checked={newAnnouncement.status === 'active'}
-                onChange={handleInputChange}
-                style={{ transform: 'scale(1.3)', accentColor: '#ffffff' }}
-              />
-              Active
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'white' }}>
-              <input
-                type="radio"
-                name="status"
-                value="inactive"
-                checked={newAnnouncement.status === 'inactive'}
-                onChange={handleInputChange}
-                style={{ transform: 'scale(1.3)', accentColor: '#ffffff' }}
-              />
-              Inactive
-            </label> */}
+            {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if validation fails */}
           </div>
           <button
-            onClick={() => setShowModal(false)}
+            onClick={() => handleSubmit()}
             style={{
               backgroundColor: 'green',
               color: 'white',
@@ -165,7 +168,6 @@ const AnnouncementsList = () => {
             <th style={{ border: '1px solid #555', padding: '16px', backgroundColor: 'rgba(68, 68, 68, 0.7)', color: '#ddd', fontSize: '18px' }}>Date</th>
             <th style={{ border: '1px solid #555', padding: '16px', backgroundColor: 'rgba(68, 68, 68, 0.7)', color: '#ddd', fontSize: '18px' }}>Title</th>
             <th style={{ border: '1px solid #555', padding: '16px', backgroundColor: 'rgba(68, 68, 68, 0.7)', color: '#ddd', fontSize: '18px' }}>Description</th>
-            <th style={{ border: '1px solid #555', padding: '16px', backgroundColor: 'rgba(68, 68, 68, 0.7)', color: '#ddd', fontSize: '18px' }}>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -179,9 +181,6 @@ const AnnouncementsList = () => {
               </td>
               <td style={{ border: '1px solid #555', padding: '14px', textAlign: 'center', fontSize: '16px' }}>
                 {announcement.content}
-              </td>
-              <td style={{ border: '1px solid #555', padding: '14px', textAlign: 'center', fontSize: '16px', color: announcement.status === 'active' ? 'green' : 'red', fontWeight: 'bold' }}>
-                {announcement.status}
               </td>
             </tr>
           ))}

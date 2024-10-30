@@ -1,19 +1,19 @@
-import React, { useContext ,useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DataContext } from '../context/UserContext'
-import { Form } from 'react-bootstrap';
-import { NotificationImportant, AccountCircle, People, Close} from '@mui/icons-material';
-import { IconButton, Dialog, DialogTitle, DialogContent, Menu, MenuItem,TextField, Button, Container, Typography, Grid,List, ListItem, ListItemText, } from '@mui/material'
-// import { IconButton } from '@mui/material';
+import { DataContext } from '../context/UserContext';
+import { NotificationImportant, AccountCircle, People, Close } from '@mui/icons-material';
+import { IconButton, Dialog, DialogTitle, DialogContent, Menu, MenuItem, TextField, Button, Typography, Grid, List, ListItem, ListItemText } from '@mui/material';
 import UpdateFamilyDialog from './Tenant/updatefamily';
 import { useNavigate } from 'react-router-dom';
 import Profile from './Profile';
 import Documents from './Tenant/Documents';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const Navbar = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const { user, setUser } = useContext(DataContext);
   const [anchorEl, setAnchorEl] = useState(null);
-  const isLoggedIn = !!user;  // Check if user is logged in
+  const isLoggedIn = !!user;
   const isAdmin = user?.role === 'admin';
   const isTenant = user?.role === 'tenant';
   const [openProfile, setOpenProfile] = useState(false);
@@ -34,23 +34,15 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      // Remove user-related data from localStorage
       await localStorage.removeItem('token');
       await localStorage.removeItem('userData');
-  
-      // Clear user state
       setUser(null);
-  
-      // Close the profile menu
       handleProfileMenuClose();
-  
-      // Redirect to the home page
       navigate('/');
     } catch (error) {
       console.error('Error logging out:', error);
     }
   };
-  
 
   const handleChangePasswordSubmit = async (event) => {
     event.preventDefault();
@@ -71,299 +63,188 @@ const Navbar = () => {
 
   const handleLoginToggle = () => {
     if (!isLoggedIn) {
-      // Logout: clear user data in context and local storage
       window.location.href = '/login';
-      // setUser(null);
-      // localStorage.removeItem("userData");
-      // localStorage.removeItem("token");
     } 
   };
 
-  const navbarStyles = {
-    backgroundColor: '#2b3844',
-    color: 'white',
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    padding: '1rem',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    zIndex: 10,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  };
-  const styles = {
-    mainContent: {
-      padding: '20px',
-      backgroundColor: '#f4f4f4',
-      minHeight: '100vh',
-      overflowY: 'auto',
-      width:'100vh'
-    },
-    navbar: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '10px 20px',
-      backgroundColor: '#004d40',
-      color: 'white',
-      position: 'fixed',
-      height:'4rem',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 1,
-    },
-    dialogTitle: {
-      position: 'relative',
-    },
-    closeButton: {
-      position: 'absolute',
-      right: '16px',
-      top: '16px',
-    },
-  };
-
-
   return (
-    <nav style={navbarStyles}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <div>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">
           <img src="images/logofinal.png" alt="Logo" style={{ height: '3.5rem', borderRadius: '50%' }} />
-          <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Hitech Apartments</span>
-        </div>
 
-        <div style={{ display: 'flex', gap: '2rem' }}>
-          {isLoggedIn && (
-            <>
-            <Link to={isAdmin ? '/admin' : '/tenant'} style={{ color: 'white' }}>Home</Link>
-              <Link to="/announcements" style={{ color: 'white' }}>Announcements</Link>
-              <Link to="/payments" style={{ color: 'white' }}>Payments</Link>
-              <Link to="/requests" style={{ color: 'white' }}>Requests</Link>
-              {/* <Link to="/events" style={{ color: 'white' }}>Events</Link> */}
-              <Link to="/flats" style={{ color: 'white' }}>Flats</Link>
-              <Link to="/feedbacks" style={{ color: 'white' }}>Feedbacks</Link>
-            </>
-          )}
-        </div>
-        <div>
-          {isLoggedIn ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            {isAdmin && (
-                <>
-                  <IconButton onClick={()=>{navigate('/notifications')}} style={{ color: 'white' }}>
-                    <NotificationImportant />
-                  </IconButton>
-                  <IconButton style={{ color: 'white' }} onClick={() => navigate('/Users')}>
-                    <People />
-                  </IconButton>
-                  <IconButton onClick={handleProfileMenuOpen} style={{ color: 'white' }}>
-                    <AccountCircle />
-                  </IconButton>
-                </>
-              )}
-              {isTenant && (
-                <>
-                  <IconButton onClick={()=>{navigate('/notifications')}} style={{ color: 'white' }}>
-                    <NotificationImportant />
-                  </IconButton>
-                  <IconButton onClick={handleProfileMenuOpen} style={{ color: 'white' }}>
-                    <AccountCircle />
-                  </IconButton>
-                </>
-              )}
-            </div>
-          ) : (
-            <button onClick={handleLoginToggle} style={{ color: 'white' }}>Login</button>
-          )}
+        </Link>
+<h2 style={{ color: "white",marginRight:"70px" }}>Hitech Apartments</h2>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            {isLoggedIn && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to={isAdmin ? '/admin' : '/tenant'}>Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/announcements">Announcements</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/payments">Payments</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/requests">Requests</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/flats">Flats</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/feedbacks">Feedbacks</Link>
+                </li>
+              </>
+            )}
+          </ul>
+          <div className="d-flex">
+            {isLoggedIn ? (
+              <div className="d-flex align-items-center">
+              <IconButton onClick={() => { navigate('/notifications') }} style={{ color: 'white' }}>
+                      <NotificationImportant />
+                </IconButton>
+                
+                {isAdmin && (
+                  <>
+                    <IconButton onClick={() => navigate('/AllUsers')} style={{ color: 'white' }}>
+                      <People />
+                    </IconButton>
+                  </>
+                )}
+                <IconButton onClick={handleProfileMenuOpen} style={{ color: 'white' }}>
+                  <AccountCircle />
+                </IconButton>
+              </div>
+            ) : (
+              <button onClick={handleLoginToggle} className="btn btn-light">Login</button>
+            )}
+          </div>
         </div>
       </div>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleProfileMenuClose}>
-              <MenuItem onClick={() => handleDialogOpen(setOpenProfile)}>View Profile</MenuItem>
-              {isTenant && (
-                <>
-                <MenuItem onClick={() => handleDialogOpen(setOpenFamilyInfo)}>Update Family Info</MenuItem>
-                <MenuItem onClick={() => handleDialogOpen(setOpenUploadDocuments)}>Upload Documents</MenuItem>
-                <MenuItem onClick={() => handleDialogOpen(setOpenUpdateProfile)}>Update Profile</MenuItem>
-                </>
-              )}
-              <MenuItem onClick={() => handleDialogOpen(setOpenChangePassword)}>Change Password</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
 
-    <Dialog open={openProfile} onClose={() => handleDialogClose(setOpenProfile)} maxWidth="md" fullWidth>
-    <DialogTitle>
-      View Profile
-      <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenProfile)}>
-        <Close />
-      </IconButton>
-    </DialogTitle>
-  <DialogContent>
-  {user ? (
-    <form>
-      <TextField
-        label="Name"
-        
-        value={user.name}
-        fullWidth
-        margin="normal"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Email"
-        value={user.email}
-        fullWidth
-        margin="normal"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Role"
-        value={user.role}
-        fullWidth
-        margin="normal"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Flat"
-        value={user.flat ? user.flat.name : 'Not Assigned'}
-        fullWidth
-        margin="normal"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Phone Number"
-        value={user.phoneNumber || 'Not Provided'}
-        fullWidth
-        margin="normal"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Emergency Contact"
-        value={user.emergencyContact || 'Not Provided'}
-        fullWidth
-        margin="normal"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-    
-      <Typography style={styles.listTitle}>Family Members:</Typography>
-      {user.familyMembers && user.familyMembers.length > 0 ? (
-        <List>
-          {user.familyMembers.map((member, index) => (
-            <TextField
-              key={index}
-              label={`${member.name} (${member.relation})`}
-              value={member.relation}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          ))}
-        </List>
-      ) : (
-        <Typography>No family members listed.</Typography>
-      )}
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleProfileMenuClose}>
+        <MenuItem onClick={() => handleDialogOpen(setOpenProfile)}>View Profile</MenuItem>
+        {isTenant && (
+          <>
+            <MenuItem onClick={() => handleDialogOpen(setOpenFamilyInfo)}>Update Family Info</MenuItem>
+            <MenuItem onClick={() => handleDialogOpen(setOpenUploadDocuments)}>Upload Documents</MenuItem>
+            <MenuItem onClick={() => handleDialogOpen(setOpenUpdateProfile)}>Update Profile</MenuItem>
+          </>
+        )}
+        <MenuItem onClick={() => handleDialogOpen(setOpenChangePassword)}>Change Password</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      </Menu>
 
-      <Typography style={styles.listTitle}>Documents:</Typography>
-      {user.documents && user.documents.length > 0 ? (
-        <List>
-          {user.documents.map((doc, index) => (
-            <TextField
-              key={index}
-              label="Document"
-              value={doc}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          ))}
-        </List>
-      ) : (
-        <Typography>No documents uploaded.</Typography>
-      )}
-    </form>
-  ) : (
-    <Typography variant="body1">Loading...</Typography> // Fallback content while user is loading
-  )}
-</DialogContent>
-      </Dialog>
-      
-      <Dialog open={openFamilyInfo} onClose={() => handleDialogClose(setOpenFamilyInfo)} maxWidth="md" fullWidth>
-        <UpdateFamilyDialog/>
-      </Dialog>
-
-      <Dialog open={openUpdateProfile} onClose={() => handleDialogClose(setOpenUpdateProfile)} maxWidth="md" fullWidth>
-        <Profile/>
-      </Dialog>
-
-      <Dialog open={openUploadDocuments} onClose={() => handleDialogClose(setOpenUploadDocuments)}>
-  <DialogTitle>
-    Upload Documents
-    <IconButton style={{ position: 'absolute', right: 8, top: 8 }} 
-    onClick={() => handleDialogClose(setOpenUploadDocuments)} maxWidth="md" fullWidth>
-      <Close />
-    </IconButton>
-  </DialogTitle>
-  <DialogContent>
-    <Documents/>
-  </DialogContent>
-</Dialog>
-
-
-      <Dialog open={openChangePassword} onClose={() => handleDialogClose(setOpenChangePassword)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          Change Password
-          <IconButton style={styles.closeButton} onClick={() => handleDialogClose(setOpenChangePassword)}>
+      {/* View Profile Dialog */}
+      <Dialog open={openProfile} onClose={() => handleDialogClose(setOpenProfile)} maxWidth="md" fullWidth>
+        <DialogTitle style={{ backgroundColor: '#343a40', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">View Profile</Typography>
+          <IconButton style={{ color: 'white' }} onClick={() => handleDialogClose(setOpenProfile)}>
             <Close />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
-        <form onSubmit={handleChangePasswordSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Old Password"
-                                    name="oldPassword"
-                                    type="password"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="New Password"
-                                    name="newPassword"
-                                    type="password"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary">
-                                    Change Password
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </DialogContent>
+        <DialogContent dividers style={{ padding: '20px', backgroundColor: '#f8f9fa' }}>
+          {user ? (
+            <form style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <TextField label="Name" value={user.name} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              <TextField label="Email" value={user.email} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              <TextField label="Role" value={user.role} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              <TextField label="Flat" value={user.flat ? user.flat.name : 'Not Assigned'} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              <TextField label="Phone Number" value={user.phoneNumber || 'Not Provided'} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              <TextField label="Emergency Contact" value={user.emergencyContact || 'Not Provided'} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+
+              <Typography variant="h6" style={{ marginTop: '20px' }}>Family Members:</Typography>
+              {user.familyMembers && user.familyMembers.length > 0 ? (
+                <List>
+                  {user.familyMembers.map((member, index) => (
+                    <ListItem key={index}>
+                      <ListItemText primary={`${member.name} (${member.relation})`} />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography>No family members listed.</Typography>
+              )}
+
+              <Typography variant="h6" style={{ marginTop: '20px' }}>Documents:</Typography>
+              {user.documents && user.documents.length > 0 ? (
+                <List>
+                  {user.documents.map((doc, index) => (
+                    <ListItem key={index}>
+                      <ListItemText primary={doc} />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography>No documents uploaded.</Typography>
+              )}
+            </form>
+          ) : (
+            <Typography variant="body1">Loading...</Typography>
+          )}
+        </DialogContent>
       </Dialog>
 
+      {/* Update Family Info Dialog */}
+      <Dialog open={openFamilyInfo} onClose={() => handleDialogClose(setOpenFamilyInfo)} maxWidth="md" fullWidth>
+        <DialogTitle style={{ backgroundColor: '#343a40', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">Update Family Info</Typography>
+          <IconButton style={{ color: 'white' }} onClick={() => handleDialogClose(setOpenFamilyInfo)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers style={{ padding: '20px', backgroundColor: '#f8f9fa' }}>
+          <UpdateFamilyDialog />
+        </DialogContent>
+      </Dialog>
+      <Dialog open={openUpdateProfile} onClose={() => handleDialogClose(setOpenUpdateProfile)} maxWidth="md" fullWidth>
+        <DialogTitle style={{ backgroundColor: '#343a40', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">Update Profile</Typography>
+          <IconButton style={{ color: 'white' }} onClick={() => handleDialogClose(setOpenUpdateProfile)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers style={{ padding: '20px', backgroundColor: '#f8f9fa' }}>
+          <Profile />
+        </DialogContent>
+      </Dialog>
+
+      {/* Upload Documents Dialog */}
+      <Dialog open={openUploadDocuments} onClose={() => handleDialogClose(setOpenUploadDocuments)} maxWidth="md" fullWidth>
+        <DialogTitle style={{ backgroundColor: '#343a40', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">Upload Documents</Typography>
+          <IconButton style={{ color: 'white' }} onClick={() => handleDialogClose(setOpenUploadDocuments)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers style={{ padding: '20px', backgroundColor: '#f8f9fa' }}>
+          <Documents />
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Password Dialog */}
+      <Dialog open={openChangePassword} onClose={() => handleDialogClose(setOpenChangePassword)} maxWidth="sm" fullWidth>
+        <DialogTitle style={{ backgroundColor: '#343a40', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">Change Password</Typography>
+          <IconButton style={{ color: 'white' }} onClick={() => handleDialogClose(setOpenChangePassword)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers style={{ padding: '20px', backgroundColor: '#f8f9fa' }}>
+          <form onSubmit={handleChangePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <TextField type="password" label="Old Password" name="oldPassword" fullWidth required />
+            <TextField type="password" label="New Password" name="newPassword" fullWidth required />
+            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '15px' }}>Change Password</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </nav>
   );
 };
