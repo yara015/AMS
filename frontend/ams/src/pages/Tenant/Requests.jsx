@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ToastCont from '../toastCont';
+import {faFilter } from '@fortawesome/free-solid-svg-icons';
+
 import { toast } from 'react-toastify';   
 const RequestsComplaints = () => {
   const [requestsComplaints, setRequestsComplaints] = useState([]);
@@ -13,7 +15,10 @@ const RequestsComplaints = () => {
   const { user } = useContext(DataContext);
   const [showModal, setShowModal] = useState(false);
   const [newRequest, setNewRequest] = useState({ type: '', description: '' });
-
+  const [filterStatus, setFilterStatus] = useState('all'); 
+  const [filterStat, setFilterStat] = useState('all'); 
+  const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
+  const [filterDropdownVisible2, setFilterDropdownVisible2] = useState(false);
   const isAdmin = user?.role === 'admin';
 
   const fetchRequestsComplaints = async () => {
@@ -89,7 +94,25 @@ const RequestsComplaints = () => {
       console.error(`Error deleting request ${id}:`, error);
     }
   };
+  const toggleFilterDropdown = () => {
+    setFilterDropdownVisible(!filterDropdownVisible);
+  };
+  const toggleFilterDropdownStat = () => {
+    setFilterDropdownVisible2(!filterDropdownVisible2);
+  };
 
+  const handleFilter= (status) => {
+    setFilterStatus(status);
+    setFilterDropdownVisible(false);
+  };
+  const handleFilterStat= (status) => {
+    setFilterStat(status);
+    setFilterDropdownVisible2(false);
+  };
+  const filteredUsers = requestsComplaints.filter(user => 
+    (filterStatus === 'all' || user.type === filterStatus) &&
+    (filterStat==="all" || user.status===filterStat)
+  );
   return (
     <div
       className="requests-complaints-list"
@@ -166,14 +189,40 @@ const RequestsComplaints = () => {
           <tr>
             <th>Date</th>
             {isAdmin && <th>Name</th>}
-            <th>Title</th>
+            <th>Type
+            <span onClick={toggleFilterDropdown} style={{ cursor: 'pointer', marginLeft: '5px' }}>
+                <FontAwesomeIcon icon={faFilter} />
+              </span>
+              {filterDropdownVisible && (
+                <div className="dropdown-menu show" style={{ position: 'absolute', zIndex: 1050 }}>
+                  <span className="dropdown-item" onClick={() => handleFilter('all')} >All</span>
+                  <span className="dropdown-item" onClick={() => handleFilter('request')}>Request</span>
+                  <span className="dropdown-item" onClick={() => handleFilter('complaint')}>Complaint</span>
+                  <span className="dropdown-item" onClick={() => handleFilter('maintenance')}>Maintenance</span>
+                  <span className="dropdown-item" onClick={() => handleFilter('other')}>Other</span>
+                </div>
+              )}
+              </th>
             <th>Description</th>
-            <th>Status</th>
+            <th>Status
+            <span onClick={toggleFilterDropdownStat} style={{ cursor: 'pointer', marginLeft: '5px' }}>
+                <FontAwesomeIcon icon={faFilter} />
+              </span>
+              {filterDropdownVisible2 && (
+                <div className="dropdown-menu show" style={{ position: 'absolute', zIndex: 1050 }}>
+                  <span className="dropdown-item" onClick={() => handleFilterStat('all')} >All</span>
+                  <span className="dropdown-item" onClick={() => handleFilterStat('pending')}>pending</span>
+                  <span className="dropdown-item" onClick={() => handleFilterStat('inprogress')}>in-progress</span>
+                  <span className="dropdown-item" onClick={() => handleFilteStat('resolved')}>resolved</span>
+            
+                </div>
+              )}
+            </th>
             {isAdmin && <th>Action</th>}
           </tr>
         </thead>
         <tbody>
-          {requestsComplaints.map((requestComplaint) => (
+          {filteredUsers.map((requestComplaint) => (
             <tr key={requestComplaint._id} style={{ backgroundColor: 'rgba(59, 59, 59, 0.7)' }}>
               <td>{new Date(requestComplaint.createdAt).toLocaleDateString()}</td>
               {isAdmin && <td>{requestComplaint.tenant?.name || 'N/A'}</td>}

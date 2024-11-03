@@ -28,6 +28,7 @@ export default function LoginPage() {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userData', JSON.stringify(response.data.user));
             const role = response.data.user.role;
+            toast.success('Login Successful');
             if (role === 'admin') {
                 navigate('/admin');
             } else if (role === 'tenant') {
@@ -36,7 +37,7 @@ export default function LoginPage() {
             window.location.reload(true);
             console.log('Login Successful');
             toast.success('Login Successful')
-            alert('Login Successful');
+           
         } catch (error) {
             //setErrorMessage(`${error.response.data.errors[0]}`);
             toast.error(`${error.response.data.errors[0]}`)

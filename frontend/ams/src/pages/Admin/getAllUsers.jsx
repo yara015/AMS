@@ -15,6 +15,7 @@ const UserList = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [filterStatus, setFilterStatus] = useState('all'); 
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchUsers = async (page, limit) => {
     setLoading(true);
@@ -67,7 +68,9 @@ const UserList = () => {
   };
 
   const filteredUsers = users.filter(user => 
-    filterStatus === 'all' || user.role === filterStatus
+    (filterStatus === 'all' || user.role === filterStatus) &&
+    (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   if (loading) return <div className="text-center">Loading...</div>;
@@ -77,7 +80,16 @@ const UserList = () => {
     <div className="container my-4">
     <div style={{ height: "6rem" }}></div>
       <h1 className="text-center text-success mb-4">User List</h1>
-
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by username or email"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ borderRadius: '8px' }}
+        />
+      </div>
       {/* Users Per Page Selection */}
       <div className="mb-3">
         <label htmlFor="usersPerPage" className="form-label text-light">Users per page:</label>

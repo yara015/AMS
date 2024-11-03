@@ -4,44 +4,41 @@ import api from '../../utils/api'; // Adjust path if needed
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
 import { FaTrashAlt, FaEnvelopeOpen, FaEnvelope } from 'react-icons/fa'; // Updated icons
 import { Modal } from 'react-bootstrap'; // Import Bootstrap modal
-
+import { toast} from 'react-toastify';
+import ToastCont from '../toastCont';
 const NotificationsList = () => {
   const [mailNotifications, setMailNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [notificationsPerPage, setNotificationsPerPage] = useState(10);
   const [totalNotifications, setTotalNotifications] = useState(0);
   const [selectedNotifications, setSelectedNotifications] = useState([]);
-  const [showModal, setShowModal] = useState(false); // State for modal visibility
-  const [selectedNotification, setSelectedNotification] = useState(null); // State for selected notification
-  const [selectMode, setSelectMode] = useState(false); // State to track select mode
+  const [showModal, setShowModal] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [selectMode, setSelectMode] = useState(false);
 
   useEffect(() => {
     fetchMailNotifications();
   }, []);
 
   useEffect(() => {
-    // Reset to first page when notifications per page changes
     setCurrentPage(0);
   }, [notificationsPerPage]);
 
-  // Fetch all notifications for the authenticated user
   const fetchMailNotifications = async () => {
     try {
       const res = await api.get(`/notifications`);
-      // Sort notifications first by read status, then by created date
       const sortedNotifications = res.data.notifications.sort((a, b) => {
         if (a.isRead === b.isRead) {
-          // If read status is the same, sort by date (latest first)
           return new Date(b.createdAt) - new Date(a.createdAt);
         }
-        // Unread notifications come first
-        return a.isRead ? 1 : -1; // Sort unread (false) first
+        return a.isRead ? 1 : -1;
       });
 
       setMailNotifications(sortedNotifications);
-      setTotalNotifications(sortedNotifications.length); // Update total count
+      setTotalNotifications(sortedNotifications.length);
     } catch (error) {
       console.error('Error fetching mail notifications:', error);
+      toast.error('Failed to load notifications');
     }
   };
 
@@ -62,38 +59,44 @@ const NotificationsList = () => {
   };
 
   const openModal = async (notification) => {
-    setSelectedNotification(notification); // Set the selected notification
-    setShowModal(true); // Open the modal
+    setSelectedNotification(notification);
+    setShowModal(true);
 
     if (!notification.isRead) {
-      await markAsRead(notification._id); // Mark as read when modal opens
+      await markAsRead(notification._id);
     }
   };
 
   const markAsRead = async (notificationId) => {
     try {
       await api.put(`/notifications/read/${notificationId}`);
-      fetchMailNotifications(); // Refresh list
+      fetchMailNotifications();
+      toast.success('Marked as read');
     } catch (error) {
       console.error('Error marking notification as read:', error);
+      toast.error('Failed to mark as read');
     }
   };
 
   const markAsUnread = async (notificationId) => {
     try {
       await api.put(`/notifications/unread/${notificationId}`);
-      fetchMailNotifications(); // Refresh list
+      fetchMailNotifications();
+      toast.info('Marked as unread');
     } catch (error) {
       console.error('Error marking notification as unread:', error);
+      toast.error('Failed to mark as unread');
     }
   };
 
   const deleteNotification = async (notificationId) => {
     try {
       await api.delete(`/notifications/${notificationId}`);
-      fetchMailNotifications(); // Refresh list after deletion
+      fetchMailNotifications();
+      toast.success('Notification deleted');
     } catch (error) {
       console.error('Error deleting notification:', error);
+      toast.error('Failed to delete notification');
     }
   };
 
@@ -102,13 +105,14 @@ const NotificationsList = () => {
       await Promise.all(
         selectedNotifications.map((id) => api.delete(`/notifications/${id}`))
       );
-      setSelectedNotifications([]); // Clear selection after deletion
-      fetchMailNotifications(); // Refresh list after deletion
+      setSelectedNotifications([]);
+      fetchMailNotifications();
+      toast.success('Selected notifications deleted');
     } catch (error) {
       console.error('Error deleting selected notifications:', error);
+      toast.error('Failed to delete selected notifications');
     }
   };
-
   // Calculate the current notifications to display
   const indexOfLastNotification = (currentPage + 1) * notificationsPerPage;
   const indexOfFirstNotification = indexOfLastNotification - notificationsPerPage;
@@ -121,7 +125,7 @@ const NotificationsList = () => {
 
       <div className="mb-3 d-flex justify-content-between align-items-center">
         <div>
-          <label htmlFor="notificationsPerPage">Per page: </label>
+        <label htmlFor="usersPerPage" className="form-label text-light">Users per page</label>
           <select
             id="notificationsPerPage"
             className="form-select form-select-sm d-inline-block w-auto"
@@ -133,6 +137,15 @@ const NotificationsList = () => {
             <option value={100}>100</option>
           </select>
         </div>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+              setSelectMode(!selectMode);
+              setSelectedNotifications([]);
+            }}
+        >
+        select
+        </button>
         <button
           className="btn btn-danger"
           onClick={deleteSelectedNotifications}
@@ -150,14 +163,13 @@ const NotificationsList = () => {
               notification.isRead ? 'bg-light text-muted' : 'bg-white'
             }`}
             style={{
-              cursor: 'pointer', // Pointer cursor for better UX
-              transition: '0.2s', // Smooth transition for hover effect
+              cursor: 'pointer',
+              transition: '0.2s',
             }}
-            onDoubleClick={() => {
-              setSelectMode(!selectMode); // Toggle select mode on double-click
-              setSelectedNotifications([]); // Clear previous selection when entering select mode
-            }}
-            // onClick={() => openModal(notification)}
+      
+            onClick={() => {
+              if(!selectMode)openModal(notification)}
+            }
            
           >
             <div className="form-check">
@@ -167,7 +179,7 @@ const NotificationsList = () => {
                   className="form-check-input"
                   checked={selectedNotifications.includes(notification._id)}
                   onChange={(e) => {
-                    e.stopPropagation(); // Prevent triggering the notification click event
+                    e.stopPropagation();
                     handleSelectNotification(notification._id);
                   }}
                 />
@@ -184,7 +196,7 @@ const NotificationsList = () => {
                 <button
                   className="btn btn-outline-secondary btn-sm me-2"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent triggering the notification click event
+                    e.stopPropagation(); 
                     markAsUnread(notification._id);
                   }}
                   title="Mark as Unread"
@@ -195,7 +207,7 @@ const NotificationsList = () => {
                 <button
                   className="btn btn-outline-primary btn-sm me-2"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent triggering the notification click event
+                    e.stopPropagation(); 
                     markAsRead(notification._id);
                   }}
                   title="Mark as Read"
@@ -205,9 +217,9 @@ const NotificationsList = () => {
               )}
               <button
                 className="btn btn-danger btn-sm"
-                style={{ border: 'none' }} // Remove border for a cleaner look
+                style={{ border: 'none' }}
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering the notification click event
+                  e.stopPropagation();
                   deleteNotification(notification._id);
                 }}
                 title="Delete Notification"
@@ -239,7 +251,9 @@ const NotificationsList = () => {
           </button>
         </Modal.Footer>
       </Modal>
-
+      <div>
+        <ToastCont/>
+      </div>
       <ReactPaginate
         previousLabel={'Previous'}
         nextLabel={'Next'}

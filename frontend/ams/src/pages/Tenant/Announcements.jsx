@@ -9,6 +9,8 @@ const AnnouncementsList = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '' });
+ 
+  const [searchQuery, setSearchQuery] = useState('');
   const { user } = useContext(DataContext);
   const isAdmin = user?.role === 'admin';
 
@@ -59,7 +61,9 @@ const AnnouncementsList = () => {
       setError('Error submitting announcement');
     }
   };
-
+  const filteredAnnouncements = announcements.filter(announcement =>
+    announcement.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   if (loading) {
     return <div style={{ color: 'white' }}>Loading announcements...</div>;
   }
@@ -85,23 +89,24 @@ const AnnouncementsList = () => {
     >
       <div style={{ height: "6.2rem", position: "relative" }}></div>
       <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Announcements</h2>
-      {isAdmin && (
-        <button
-          onClick={() => setShowModal(true)}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#008CBA',
-            color: 'white',
-            borderRadius: '15px',
-            cursor: 'pointer',
-            marginBottom: '20px',
-            marginRight: '10%',
-            alignSelf: 'flex-end',
-          }}
-        >
-          Create New Announcement
-        </button>
-      )}
+      <div style={{ display: 'flex', justifyContent: 'space-between', width: '85%', marginBottom: '20px' }}>
+      <input
+          type="text"
+          className="form-control"
+          placeholder="Search by title"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ borderRadius: '8px', width: '70%' }}
+        />
+        {isAdmin && (
+          <button
+            onClick={() => setShowModal(true)}
+            style={{ padding: '10px 20px', backgroundColor: '#008CBA', color: 'white', borderRadius: '15px', cursor: 'pointer', marginRight: '10px' }}
+          >
+            Create New Announcement
+          </button>
+        )}
+      </div>
 
       {showModal && (
         <div
@@ -182,7 +187,7 @@ const AnnouncementsList = () => {
           </tr>
         </thead>
         <tbody>
-          {announcements.map((announcement) => (
+          {filteredAnnouncements.map((announcement) => (
             <tr key={announcement._id} style={{ backgroundColor: 'rgba(59, 59, 59, 0.7)' }}>
               <td style={{ border: '1px solid #555', padding: '14px', textAlign: 'center', fontSize: '16px' }}>
                 {new Date(announcement.date).toLocaleDateString()}

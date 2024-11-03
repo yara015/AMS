@@ -140,16 +140,16 @@ const Navbar = () => {
       </div>
 
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleProfileMenuClose}>
-        <MenuItem onClick={() => handleDialogOpen(setOpenProfile)}>View Profile</MenuItem>
+        <MenuItem key="1" onClick={() => handleDialogOpen(setOpenProfile)}>View Profile</MenuItem>
         {isTenant && (
           <>
-            <MenuItem onClick={() => handleDialogOpen(setOpenFamilyInfo)}>Update Family Info</MenuItem>
-            <MenuItem onClick={() => handleDialogOpen(setOpenUploadDocuments)}>Upload Documents</MenuItem>
-            <MenuItem onClick={() => handleDialogOpen(setOpenUpdateProfile)}>Update Profile</MenuItem>
+            <MenuItem key="2"  onClick={() => handleDialogOpen(setOpenFamilyInfo)}>Update Family Info</MenuItem>
+            <MenuItem key="3" onClick={() => handleDialogOpen(setOpenUploadDocuments)}>Upload Documents</MenuItem>
+            <MenuItem key="4" onClick={() => handleDialogOpen(setOpenUpdateProfile)}>Update Profile</MenuItem>
           </>
         )}
-        <MenuItem onClick={() => handleDialogOpen(setOpenChangePassword)}>Change Password</MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem key="5" onClick={() => handleDialogOpen(setOpenChangePassword)}>Change Password</MenuItem>
+        <MenuItem key="6" onClick={handleLogout}>Logout</MenuItem>
       </Menu>
 
       {/* View Profile Dialog */}
