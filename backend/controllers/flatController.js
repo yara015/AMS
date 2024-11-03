@@ -5,17 +5,19 @@ const User = require('../models/User');
 // Create a new flat (Admin use only)
 exports.createFlat = async (req, res) => {
   try {
-    const { type, floor, number } = req.body;
+    const { type, floor, number,rent } = req.body;
 
     // Validate input data
-    if (!type || !floor || !number) {
-      return res.status(400).json({ success: false, message: 'Type, floor, and number are required.' });
+    if (!type || !floor || !number || !rent) {
+       res.status(400).json({ success: false, message: 'Type, floor, number and rent are required.' });
+       return;
     }
 
     const newFlat = new Flat({
       type,
       floor,
       number,
+      rent,
       status: 'vacant' // Default status to 'vacant'
     });
 

@@ -39,6 +39,9 @@ const visitorRoutes=require('./routes/visitorRoutes')
 app.use('/api/visitors', visitorRoutes);
 const feedbackRoutes=require('./routes/feedbackRoutes');
 app.use('/api/feedbacks',feedbackRoutes);
+const docRoutes=require('./routes/docRoutes')
+app.use('/api/documents',docRoutes);
+
 // Middleware
 
 

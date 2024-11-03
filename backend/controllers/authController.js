@@ -151,15 +151,15 @@ exports.updateProfile = async (req, res) => {
     const { name,phoneNumber,email} = req.body;
 
     // Validate input data
-    if (!name && !email) {
-      return res.status(400).json({ success: false, errors:[ 'At least one field is required to update.'] });
-    }
+    // if (!name || !email) {
+    //   return res.status(400).json({ success: false, errors:[ 'At least one field is required to update.'] });
+    // }
 
     // Prepare update data
     const updateData = {};
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (phoneNumber) updateData.phoneNumber = email;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
    // if (password) updateData.password = await bcrypt.hash(password, 10);
 
     // Update user profile

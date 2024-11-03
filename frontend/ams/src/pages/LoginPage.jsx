@@ -5,7 +5,8 @@ import axios from 'axios';
 import { DataContext } from '../context/UserContext';
 import { URL } from '../url';
 import api from '../utils/api';
-
+import ToastCont from './toastCont';
+import { toast } from 'react-toastify';   
 export default function LoginPage() {
     const navigate = useNavigate();
     const { setData, setToken } = useContext(DataContext);
@@ -34,10 +35,12 @@ export default function LoginPage() {
             }
             window.location.reload(true);
             console.log('Login Successful');
+            toast.success('Login Successful')
             alert('Login Successful');
         } catch (error) {
-            setErrorMessage(`${error.response.data.errors[0]}`);
-            console.error('There was an error logging in!', error);
+            //setErrorMessage(`${error.response.data.errors[0]}`);
+            toast.error(`${error.response.data.errors[0]}`)
+            //console.error('There was an error logging in!', error);
            // alert(error.response.data.errors[0]);
         }
     };
@@ -182,6 +185,9 @@ export default function LoginPage() {
                     </main>
                 </Col>
             </Row>
+            <div>
+                <ToastCont/>
+            </div>
         </Container>
     );
 }

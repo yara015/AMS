@@ -11,7 +11,7 @@ router.get('/tenant',
 );
 
 // Get all feedbacks (admin only)
-router.get('/', verifyToken, isAdmin, feedbackController.getFeedbackForAdmin);
+router.get('/', verifyToken, feedbackController.getFeedbackForAdmin);
 
 // Submit new feedback
 router.post('/', verifyToken, feedbackController.submitFeedback);

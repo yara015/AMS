@@ -4,7 +4,8 @@ import { DataContext } from '../../context/UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import ToastCont from '../toastCont';
+import { toast } from 'react-toastify';   
 const RequestsComplaints = () => {
   const [requestsComplaints, setRequestsComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,13 +22,22 @@ const RequestsComplaints = () => {
       const res = await api.get(endpoint);
       setRequestsComplaints(res.data.requests);
     } catch (error) {
+      toast.error(`${error.response.data.errors[0]}`)
       setError('Error fetching requests and complaints');
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchRequestsComplaints();
+
+  
+    const interval = setInterval(() => {
+      fetchRequestsComplaints();
+    }, 5000);
+
+    return () => clearInterval(interval); // Clean up on unmount
   }, [isAdmin]);
 
   const handleInputChange = (e) => {
@@ -41,7 +51,9 @@ const RequestsComplaints = () => {
       setShowModal(false);
       setNewRequest({ type: '', description: '' });
       fetchRequestsComplaints();
+      toast.success("request submitted succesfully");
     } catch (error) {
+      toast.error(`${error.response.data.message}`)
       setError('Error submitting request');
     }
   };
@@ -57,9 +69,11 @@ const RequestsComplaints = () => {
   const handleUpdate = async (id, status) => {
     try {
       await api.put(`/requests/${id}`, { status });
-      console.log(`Status for request ${id} updated successfully.`);
-      fetchRequestsComplaints();
+      toast.success(`Status for request ${id} updated successfully.`);
+      fetchRequestsComplaints(); 
     } catch (error) {
+      toast.error(`${error.response.data.errors[0]}`)
+      
       console.error(`Error updating status for request ${id}:`, error);
     }
   };
@@ -69,8 +83,9 @@ const RequestsComplaints = () => {
       await api.delete(`/requests/delete/${id}`);
       setRequestsComplaints(prevRequests => prevRequests.filter(request => request._id !== id));
       fetchRequestsComplaints();
-      console.log(`Request ${id} deleted successfully.`);
+      toast.success(`Request ${id} deleted successfully.`);
     } catch (error) {
+     toast.error(`${error.response.data.message}`)
       console.error(`Error deleting request ${id}:`, error);
     }
   };
@@ -150,6 +165,7 @@ const RequestsComplaints = () => {
         <thead>
           <tr>
             <th>Date</th>
+            {isAdmin && <th>Name</th>}
             <th>Title</th>
             <th>Description</th>
             <th>Status</th>
@@ -160,6 +176,7 @@ const RequestsComplaints = () => {
           {requestsComplaints.map((requestComplaint) => (
             <tr key={requestComplaint._id} style={{ backgroundColor: 'rgba(59, 59, 59, 0.7)' }}>
               <td>{new Date(requestComplaint.createdAt).toLocaleDateString()}</td>
+              {isAdmin && <td>{requestComplaint.tenant?.name || 'N/A'}</td>}
               <td>{requestComplaint.type}</td>
               <td>{requestComplaint.description}</td>
               <td>
@@ -201,6 +218,9 @@ const RequestsComplaints = () => {
           ))}
         </tbody>
       </table>
+      <div>
+        <ToastCont/>
+      </div>
     </div>
   );
 };

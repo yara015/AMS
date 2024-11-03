@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../../utils/api'; // Adjust path if needed
 import { DataContext } from '../../context/UserContext';
-
+import ToastCont from '../toastCont';
+import { toast } from 'react-toastify';   
 const AnnouncementsList = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,20 +12,28 @@ const AnnouncementsList = () => {
   const { user } = useContext(DataContext);
   const isAdmin = user?.role === 'admin';
 
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const res = await api.get('/announcements');
-        setAnnouncements(res.data.announcements);
-      } catch (error) {
-        console.error('Error fetching announcements:', error);
-        setError('Error fetching announcements');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch announcements from the server
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await api.get('/announcements');
+      setAnnouncements(res.data.announcements);
+    } catch (error) {
+      toast.error(`${error.resonse.data.message}`);
+      console.error('Error fetching announcements:', error);
+      setError('Error fetching announcements');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchAnnouncements();
+
+   
+    const interval = setInterval(() => {
+      fetchAnnouncements();
+    }, 5000); 
+    return () => clearInterval(interval); 
   }, []);
 
   const handleInputChange = (e) => {
@@ -33,7 +42,7 @@ const AnnouncementsList = () => {
 
   const handleSubmit = async () => {
     if (!newAnnouncement.title || !newAnnouncement.content) {
-      console.log('Both title and content are required.');
+      toast.error('Both title and content are required.');
       return; // Prevent submission if validation fails
     }
 
@@ -43,8 +52,10 @@ const AnnouncementsList = () => {
       setShowModal(false);
       setNewAnnouncement({ title: '', content: '' });
       setError(null); // Clear any previous errors
+      toast.success("Announcement announced successfully");
     } catch (error) {
       console.error('Error submitting announcement:', error);
+      toast.error(`${error.resonse.data.message}`);
       setError('Error submitting announcement');
     }
   };
@@ -186,6 +197,9 @@ const AnnouncementsList = () => {
           ))}
         </tbody>
       </table>
+      <div>
+        <ToastCont/>
+      </div>
     </div>
   );
 };

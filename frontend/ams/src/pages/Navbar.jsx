@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DataContext } from '../context/UserContext';
 import { NotificationImportant, AccountCircle, People, Close } from '@mui/icons-material';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Profile from './Profile';
 import Documents from './Tenant/Documents';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import api from '../utils/api';
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(DataContext);
@@ -53,20 +53,29 @@ const Navbar = () => {
     };
 
     try {
-      await api.put(`/auth/change-password`, data);
+      await api.put('/auth/change-password', data);
       alert("Password changed successfully!");
       handleDialogClose(setOpenChangePassword);
     } catch (error) {
-      alert(error.response.data.errors[0]);
+      alert(error);
     }
   };
+  
 
   const handleLoginToggle = () => {
     if (!isLoggedIn) {
       window.location.href = '/login';
     } 
   };
-
+  const fetchUserData = async () => {
+    try {
+      const response = await api.get('/auth/user'); // Adjust the endpoint as needed
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container-fluid">
@@ -74,7 +83,8 @@ const Navbar = () => {
           <img src="images/logofinal.png" alt="Logo" style={{ height: '3.5rem', borderRadius: '50%' }} />
 
         </Link>
-<h2 style={{ color: "white",marginRight:"70px" }}>Hitech Apartments</h2>
+<h2 style={{ color: "white",marginRight:"10px" }}>Hitech</h2>
+<h5 style={{ color: "white",marginRight:"70px" }}>Apartments</h5>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -156,9 +166,9 @@ const Navbar = () => {
               <TextField label="Name" value={user.name} fullWidth margin="normal" InputProps={{ readOnly: true }} />
               <TextField label="Email" value={user.email} fullWidth margin="normal" InputProps={{ readOnly: true }} />
               <TextField label="Role" value={user.role} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-              <TextField label="Flat" value={user.flat ? user.flat.name : 'Not Assigned'} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              {/* <TextField label="Flat" value={user.flat ? user.flat.name : 'Not Assigned'} fullWidth margin="normal" InputProps={{ readOnly: true }} /> */}
               <TextField label="Phone Number" value={user.phoneNumber || 'Not Provided'} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-              <TextField label="Emergency Contact" value={user.emergencyContact || 'Not Provided'} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+              {/* <TextField label="Emergency Contact" value={user.emergencyContact || 'Not Provided'} fullWidth margin="normal" InputProps={{ readOnly: true }} /> */}
 
               <Typography variant="h6" style={{ marginTop: '20px' }}>Family Members:</Typography>
               {user.familyMembers && user.familyMembers.length > 0 ? (

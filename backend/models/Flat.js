@@ -6,6 +6,7 @@ const FlatSchema = new mongoose.Schema({
   floor: { type: String, required: true},
   type: { type: String, enum: ['1BHK', '2BHK', '3BHK', 'penthouse'], required: true },
   status: { type: String, enum: ['vacant', 'occupied'], default: 'vacant' },
+  rent: { type: String, required: true, unique: true },
   tenant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // List of tenants in the flat
 });
 

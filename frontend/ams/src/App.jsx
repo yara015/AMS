@@ -3,7 +3,7 @@ import React from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './Pages/LoginPage';
-import Register from './pages/Register';
+import Register from './Pages/Register';
 import { UserContextProvider } from './context/UserContext';
 import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
@@ -14,12 +14,13 @@ import AnnouncementsList from './Pages/Tenant/Announcements';
 // import Profile from './Pages/Admin/Profile';
 import UsersList from './Pages/Admin/getAllUsers';
 import NotificationsList from './Pages/Admin/Notifications';
-import Navbar from './pages/Navbar';
-import Home from './pages/Home';
+import Navbar from './Pages/Navbar';
+import Home from './Pages/Home';
 import Footer from './pages/Footer';
-import RequestsComplaints from './pages/Tenant/Requests';
+import RequestsComplaints from './Pages/Tenant/Requests';
 import FlatsManagement from './Pages/Tenant/Flat';
 // import Dashboard from './Pages/Admin/Dashboard';
+import Feedback from './Pages/Feedback'
 function App() {
     return (
         <div>
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/notifications" element={<NotificationsList />} />
                 <Route path="/requests" element={<RequestsComplaints />} />
                 <Route path="/flats" element={<FlatsManagement />} />
+                <Route path="/feedbacks" element={<Feedback/>}/>
             </Routes>
             <Footer/>
         </UserContextProvider>

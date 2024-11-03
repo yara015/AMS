@@ -52,9 +52,9 @@ exports.updateTenantProfile = async (req, res) => {
     const { name, email, phoneNumber } = req.body;
 
     // Validate input data
-    if (!name && !email && !phoneNumber) {
-      return res.status(400).json({ success: false, message: 'At least one field is required to update.' });
-    }
+    // if (!name && !email && !phoneNumber) {
+    //   return res.status(400).json({ success: false, message: 'At least one field is required to update.' });
+    // }
 
     // Prepare update data
     const updateData = {};
@@ -217,7 +217,7 @@ exports.addDocuments=async(req,res)=>{
     // Check if a file was uploaded
     const tenantId = req.user.id;
     const  documents  = req.body;
-     
+     console.log(documents);
       // Validate input data
       if (!documents || !Array.isArray(documents)) {
         return res.status(400).json({ success: false, message: 'documents information is required and should be an array.' });
