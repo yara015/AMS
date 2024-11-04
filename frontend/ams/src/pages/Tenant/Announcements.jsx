@@ -80,7 +80,7 @@ const AnnouncementsList = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundImage: `url("images/minimalist-black-interior-with-black-sofa.jpg")`,
+        backgroundImage: `url("images/Announce2.jpg")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',

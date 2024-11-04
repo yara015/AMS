@@ -16,6 +16,7 @@ const UserList = () => {
   const [filterStatus, setFilterStatus] = useState('all'); 
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [flats, setFlats] = useState([]);
 
   const fetchUsers = async (page, limit) => {
     setLoading(true);
@@ -31,8 +32,19 @@ const UserList = () => {
     }
   };
 
+  const fetchFlats = async () => {
+    try {
+      const res = await api.get('/flats');
+      setFlats(res.data.flats);
+    } catch (error) {
+      console.error('Error fetching flats:', error);
+      setError('Failed to fetch flats. Please try again.');
+    }
+  };
+
   useEffect(() => {
     fetchUsers(currentPage, usersPerPage);
+    fetchFlats();
   }, [currentPage, usersPerPage]);
 
   const handleUserClick = (user) => {
@@ -75,6 +87,12 @@ const UserList = () => {
 
   if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-danger text-center">{error}</div>;
+
+  const getFlatNumber = (userId) => {
+
+    const flat = flats.find((flat) => flat.tenant && flat.tenant._id === userId);
+    return flat ? flat.number : 'Not Assigned';
+  };
 
   return (
     <div className="container my-4">
@@ -146,7 +164,7 @@ const UserList = () => {
               <td>{user.name}</td>
               <td>{user.email}</td>
               <td>{user.role}</td>
-              <td>{user.flat ? user.flat.number : 'Not Assigned'}</td>
+              <td>{getFlatNumber(user._id)}</td>
               <td>{user.phoneNumber || 'No phone number provided'}</td>
             </tr>
           ))}
@@ -199,16 +217,16 @@ const UserList = () => {
                     </tr>
                     <tr>
                       <td><strong>Flat Number:</strong></td>
-                      <td>{selectedUser.flat ? selectedUser.flat.number : 'Not Assigned'}</td>
+                      <td>{getFlatNumber(selectedUser._id)}</td>
                     </tr>
                     <tr>
                       <td><strong>Phone Number:</strong></td>
                       <td>{selectedUser.phoneNumber || 'No phone number provided'}</td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <td><strong>Emergency Contact:</strong></td>
                       <td>{selectedUser.emergencyContact || 'Not Provided'}</td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <td><strong>Family Members:</strong></td>
                       <td>

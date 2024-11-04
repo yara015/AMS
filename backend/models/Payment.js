@@ -7,7 +7,7 @@ const PaymentSchema = new mongoose.Schema({
   paymentDate: { type: Date, default: Date.now },
   paymentType: { type: String, enum: ['rent', 'utility', 'maintenance'], required: true },
   status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
-  receipt: { type: String } // Path or URL to the payment receipt
+  receipt: { type: String } 
 });
 
 module.exports = mongoose.model('Payment', PaymentSchema);

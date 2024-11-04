@@ -110,35 +110,61 @@ const Feedback = () => {
   const displayedFeedbacks = showMyFeedbacks ? myFeedbacks : feedbacks;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{
+      // backgroundImage: "url('images/Darkint.avif')",
+      backgroundColor: 'linear-gradient(135deg, #2E3B4E, #1F2937)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      minHeight: '100vh',
+    }}>
+    <div style={{ padding: '15px' }}>
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} pauseOnHover={true} draggable={true} theme="colored" />
       <div style={{ height: "6.2rem", position: "relative" }}></div>
-      <h2 style={{ color: '#007bff' }}>Feedback</h2>
+      <h2 style={{ color: 'white', textAlign: 'center' }}>Feedback</h2>
 
       {user.role === 'tenant' && (
         <form onSubmit={handleFeedbackSubmit} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-          <TextField
-            label="Your Feedback"
-            value={newFeedback}
-            onChange={(e) => setNewFeedback(e.target.value)}
-            required
-            fullWidth
-            variant="outlined"
-          />
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary"
-          >
-            Submit
-          </Button>
-        </form>
+        <TextField
+          label="Your Feedback"
+          value={newFeedback}
+          onChange={(e) => setNewFeedback(e.target.value)}
+          required
+          fullWidth
+          variant="outlined"
+          InputProps={{
+            style: { backgroundColor: 'white' }  // Set background color to white
+          }}
+        />
+        <Button 
+          type="submit" 
+          variant="contained" 
+          color="primary"
+        >
+          Submit
+        </Button>
+      </form>
+      
       )}
 
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <Button variant="outlined" color="primary" onClick={handleMyFeedbacks}>My Feedbacks</Button>
-        <Button variant="outlined" color="secondary" onClick={handleShowAllFeedbacks}>Show All Feedbacks</Button>
-      </div>
+<div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+  <Button 
+    variant="outlined" 
+    color="primary" 
+    onClick={handleMyFeedbacks} 
+    style={{ color: 'white', borderColor: 'white' }}
+  >
+    My Feedbacks
+  </Button>
+  <Button 
+    variant="outlined" 
+    color="secondary" 
+    onClick={handleShowAllFeedbacks} 
+    style={{ color: 'white', borderColor: 'white' }}
+  >
+    Show All Feedbacks
+  </Button>
+</div>
+
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
         {displayedFeedbacks.map((feedback) => (
@@ -185,6 +211,7 @@ const Feedback = () => {
         </Dialog>
       )}
       <div><ToastCont/></div>
+    </div>
     </div>
   );
 };

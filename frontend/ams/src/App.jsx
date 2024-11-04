@@ -18,6 +18,7 @@ import Navbar from './Pages/Navbar';
 import Home from './Pages/Home';
 import Footer from './pages/Footer';
 import RequestsComplaints from './Pages/Tenant/Requests';
+import PaymentPage from './pages/Tenant/Payments';
 import FlatsManagement from './Pages/Tenant/Flat';
 // import Dashboard from './Pages/Admin/Dashboard';
 import Feedback from './Pages/Feedback'
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/login/reset-password" element={<ResetPassword/>}/>
                 <Route path="/Admin" element={<Home />} />
                 <Route path="/Tenant" element={<Home />} />
+                <Route path="/payments" element={<PaymentPage />} />
                 <Route path="/announcements" element={<AnnouncementsList />} />
                 <Route path="/AllUsers" element={<UsersList />} />
                 <Route path="/notifications" element={<NotificationsList />} />

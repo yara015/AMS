@@ -153,9 +153,15 @@ const FlatsManagement = () => {
   if (error) return <div className="text-danger text-center">{error}</div>;
 
   return (
-    <div className="container my-4">
-      <h1 className="text-center text-primary mb-4">Flats Management</h1>
-
+    <div style={{
+      backgroundImage: "url('images/FlatsBg.jpg')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      minHeight: '100vh',
+    }}>
+      <div style={{ height: "6rem" }}></div>
+    <div className="container my-4" >
+    <h1 className="text-center text-white mb-4">Flats Management</h1>
       {isAdmin && (
         <div className="mb-4">
           <h2 className="text-secondary">Create New Flat</h2>
@@ -203,55 +209,56 @@ const FlatsManagement = () => {
       )}
 
       <div className="mb-4">
-        {isAdmin ? (<h2 className="text-secondary">Flats</h2>) : (<h2 className="text-secondary">Vacant Flats</h2>)}
-        <table className="table table-bordered">
-          <thead className="table-light">
-            <tr>
-              <th>Flat No.</th>
-              {isAdmin && (<th>Tenant Name</th>)}
-              <th>Type</th>
-              <th>
-                Status 
-                {isAdmin && (
-                  <>
-                    <span onClick={toggleFilterDropdown} style={{ cursor: 'pointer', marginLeft: '5px' }}>
-                      <FontAwesomeIcon icon={faFilter} />
-                    </span>
-                    {filterDropdownVisible && (
-                      <div className="dropdown-menu show" style={{ position: 'absolute' }}>
-                        <span className="dropdown-item" onClick={() => handleFilterChange('vacant')}>Vacant</span>
-                        <span className="dropdown-item" onClick={() => handleFilterChange('occupied')}>Occupied</span>
-                        <span className="dropdown-item" onClick={() => handleFilterChange('all')}>All</span>
-                      </div>
-                    )}
-                  </>
-                )}
-              </th>
-              <th>Rent</th>
-              {isAdmin && (<th>Actions</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredFlats.map(flat => (
-              <tr key={flat._id}>
-                <td>{flat.number}</td>
-                {isAdmin && (<td>{flat.tenant ? flat.tenant.name : 'No tenant assigned'}</td>)}
-                <td>{flat.type}</td>
-                <td>{flat.status}</td>
-                <td>{flat.rent}</td>
-                {isAdmin && (
-                  <td>
-                    {flat.status === 'occupied' ? (
-                      <button onClick={() => handleViewFlatDetails(flat._id)} className="btn btn-info">View Details</button>
-                    ) : (
-                      <button onClick={() => handleOpenTenantSelection(flat)} className="btn btn-warning">Assign Tenant</button>
-                    )}
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {isAdmin ? (<h2 className="text-white">Flats</h2>) : (<h2 className="text-white">Vacant Flats</h2>)}
+        <table className="table table-bordered" style={{ borderRadius: '10px', overflow: 'hidden' }}>
+  <thead className="table-light">
+    <tr>
+      <th>Flat No.</th>
+      {isAdmin && (<th>Tenant Name</th>)}
+      <th>Type</th>
+      <th>
+        Status 
+        {isAdmin && (
+          <>
+            <span onClick={toggleFilterDropdown} style={{ cursor: 'pointer', marginLeft: '5px' }}>
+              <FontAwesomeIcon icon={faFilter} />
+            </span>
+            {filterDropdownVisible && (
+              <div className="dropdown-menu show" style={{ position: 'absolute' }}>
+                <span className="dropdown-item" onClick={() => handleFilterChange('vacant')}>Vacant</span>
+                <span className="dropdown-item" onClick={() => handleFilterChange('occupied')}>Occupied</span>
+                <span className="dropdown-item" onClick={() => handleFilterChange('all')}>All</span>
+              </div>
+            )}
+          </>
+        )}
+      </th>
+      <th>Rent</th>
+      {isAdmin && (<th>Actions</th>)}
+    </tr>
+  </thead>
+  <tbody>
+    {filteredFlats.map(flat => (
+      <tr key={flat._id}>
+        <td>{flat.number}</td>
+        {isAdmin && (<td>{flat.tenant ? flat.tenant.name : 'No tenant assigned'}</td>)}
+        <td>{flat.type}</td>
+        <td>{flat.status}</td>
+        <td>{flat.rent}</td>
+        {isAdmin && (
+          <td>
+            {flat.status === 'occupied' ? (
+              <button onClick={() => handleViewFlatDetails(flat._id)} className="btn btn-info">View Details</button>
+            ) : (
+              <button onClick={() => handleOpenTenantSelection(flat)} className="btn btn-warning">Assign Tenant</button>
+            )}
+          </td>
+        )}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
       </div>
 
       {/* Flat Details Modal */}
@@ -354,6 +361,7 @@ const FlatsManagement = () => {
         <ToastCont/>
       </div>
      
+    </div>
     </div>
   );
 };

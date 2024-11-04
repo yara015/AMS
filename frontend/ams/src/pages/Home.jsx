@@ -56,7 +56,7 @@ const Home = () => {
     <div style={{ fontFamily: "'Poppins', sans-serif", background: "#2b3844", margin: "0", padding: "0", overflowX: "hidden", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
     
       {/* Spacer for Top Buttons */}
-      <div style={{ height: "1.5rem" }}></div>
+      <div style={{ height: "0.8rem" }}></div>
 
       {/* Hero Section with About Us */}
       <div className="hero-section" style={{ position: "relative", width: "100%", marginTop: "4rem", height: "calc(100vh - 4rem)", backgroundImage: "url('../images/GatedComm.jpg')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", zIndex: "5" }}>
