@@ -4,23 +4,18 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './Pages/LoginPage';
 import Register from './Pages/Register';
-import { UserContextProvider } from './context/UserContext';
+import { UserContextProvider } from './Context/UserContext';
 import ForgotPassword from './Pages/forgotpassword';
 import ResetPassword from './Pages/resetPassword';
-import LandingPage from './Pages/LandingPage';
-import Dashboard from './Pages/Admin/Dashboard';
-import TenantDashboard from './Pages/Tenant/tenantDashboard';
 import AnnouncementsList from './Pages/Tenant/Announcements';
-// import Profile from './Pages/Admin/Profile';
 import UsersList from './Pages/Admin/getAllUsers';
 import NotificationsList from './Pages/Admin/Notifications';
 import Navbar from './Pages/Navbar';
 import Home from './Pages/Home';
 import Footer from './pages/Footer';
 import RequestsComplaints from './Pages/Tenant/Requests';
-import PaymentPage from './pages/Tenant/Payments';
+import PaymentPage from './Pages/Tenant/Payments';
 import FlatsManagement from './Pages/Tenant/Flat';
-// import Dashboard from './Pages/Admin/Dashboard';
 import Feedback from './Pages/Feedback'
 function App() {
     return (
@@ -31,8 +26,8 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route exact path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/login/forgot-password" element={<ForgotPassword/>}/>
-                <Route path="/login/reset-password" element={<ResetPassword/>}/>
+                <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                <Route path="/reset-password" element={<ResetPassword/>}/>
                 <Route path="/Admin" element={<Home />} />
                 <Route path="/Tenant" element={<Home />} />
                 <Route path="/payments" element={<PaymentPage />} />

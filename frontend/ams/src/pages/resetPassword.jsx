@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col, FloatingLabel, Alert } from 'react-b
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { URL } from '../url';
-import { DataContext } from '../context/UserContext'; // Import your DataContext
+import { DataContext } from '../Context/UserContext'; // Import your DataContext
 
 function ResetPassword() {
     const navigate = useNavigate();

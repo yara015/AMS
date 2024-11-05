@@ -7,10 +7,17 @@ const mongoose = require('mongoose');
 //create new Payment
 exports.createPayment = async (req, res) => {
   try {
-    const { amount, paymentType, date, status } = req.body;
-
+    const { amount, paymentType, date, status,title, } = req.body;
+    const fileBuffer = req.file.buffer; 
+    const fileType = req.file.mimetype;
+    console.log(typeof(amount));
+    console.log(amount);
+    console.log(typeof(paymentType));
+    console.log(status);
+    console.log(title)
+    console.log(paymentType)
     // Validate input data
-    if (!amount || !paymentType || !date || !status) {
+    if (!amount || !paymentType || !date || !status || !title) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
     const userId=req.user.id;
@@ -22,6 +29,9 @@ exports.createPayment = async (req, res) => {
       paymentType,
       date: new Date(date),
       status,
+      title,
+      file:fileBuffer, 
+      fileType, 
     });
 
     // Save to the database
@@ -174,6 +184,33 @@ exports.getPaymentHistory = async (req, res) => {
       const user = req.user;
       const payments = await Payment.find({tenant:user}).sort({ date: -1 });
       res.status(200).json({ success: true, payments });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });
+    }
+  };
+  exports.updatePaymentStatusToCompleted = async (req, res) => {
+    try {
+      const paymentId = req.params.id;
+      const {newstatus}=req.body;
+      console.log(newstatus);
+      // Validate ObjectId
+      if (!mongoose.Types.ObjectId.isValid(paymentId)) {
+        return res.status(400).json({ success: false, message: 'Invalid payment ID.' });
+      }
+  
+      // Find and update the payment record, setting status to "completed"
+      const updatedPayment = await Payment.findByIdAndUpdate(
+        paymentId,
+        { status:newstatus},
+        { new: true }
+      );
+  
+      if (!updatedPayment) {
+        return res.status(404).json({ success: false, message: 'Payment record not found.' });
+      }
+  
+      res.status(200).json({ success: true, message: 'Payment status updated to paid successfully.', payment: updatedPayment });
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, message: 'Server error. Please try again later.', error });

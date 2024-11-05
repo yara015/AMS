@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Form, Button, Container, Row, Col, FloatingLabel } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { DataContext } from '../context/UserContext';
+import { DataContext } from '../Context/UserContext';
 import { URL } from '../url';
 import api from '../utils/api';
 import ToastCont from './toastCont';
@@ -49,6 +49,12 @@ export default function LoginPage() {
     return (
         <Container className="container">
             <style>{`
+                 body {
+                    background-image: url('Lounge.jpg'); 
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                }
                 .container {
                     height: 100vh;
                     width : 100vh;
@@ -161,9 +167,12 @@ export default function LoginPage() {
                     }
                 }
             `}</style>
-
+            
+            
+           
             <Row className="w-100 justify-content-center">
                 <Col xs={12} md={8} lg={6} className="text-center">
+              
                     <main className="form-signin">
                         <Form onSubmit={handleSubmit}>
                             <h1 className="text-center h3 mb-3 fw-normal">Login</h1>
@@ -175,7 +184,7 @@ export default function LoginPage() {
                             </FloatingLabel>
                             <Button variant="warning" className="w-100 py-2 mt-3" type="submit">Login</Button>
                             <div className="text-center mt-3">
-                                <Link to='/login/forgot-password' className='text-dark'>Forgot Password?</Link>
+                                <Link to='/forgot-password' className='text-dark'>Forgot Password?</Link>
                             </div>
                             <div className="text-center mt-3">
                                 <Link to='/register' className='text-dark'>Don't have an account? Register here</Link>

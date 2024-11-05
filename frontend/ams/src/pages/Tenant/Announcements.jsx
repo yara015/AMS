@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../../utils/api'; // Adjust path if needed
-import { DataContext } from '../../context/UserContext';
+import { DataContext } from '../../Context/UserContext';
 import ToastCont from '../toastCont';
 import { toast } from 'react-toastify';   
 const AnnouncementsList = () => {

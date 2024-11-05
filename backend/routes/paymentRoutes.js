@@ -1,19 +1,23 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const paymentController = require('../controllers/paymentController');
 const authMiddleware = require('../middleware/authMiddleware');
 const validationMiddleware = require('../middleware/validationMiddleware');
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // Create a payment (Tenants only)
 router.post('/', 
   authMiddleware.verifyToken, 
   authMiddleware.isTenant,
-  validationMiddleware.validatePayment, 
+  upload.single('file'),
+  // validationMiddleware.validatePayment, 
   paymentController.createPayment
 );
 
 // Get all payment records (Admin only)
-router.get('/admin/all', 
+router.get('/all', 
   authMiddleware.verifyToken, 
   authMiddleware.isAdmin, 
   paymentController.getAllPayments
@@ -25,7 +29,7 @@ router.get('/user/:userId',
   authMiddleware.isAdmin,
   paymentController.getPaymentsByUser
 );
-router.get('/user',
+router.get('/',
   authMiddleware.verifyToken, 
   authMiddleware.isTenant,
   paymentController.getPaymentsOfUser
@@ -49,5 +53,10 @@ router.get('/history',
   authMiddleware.verifyToken, 
   paymentController.getPaymentHistory
 );
+router.put('/updateStatus/:id',
+  authMiddleware.verifyToken, 
+  authMiddleware.isAdmin,
+  paymentController.updatePaymentStatusToCompleted
+)
 
 module.exports = router;

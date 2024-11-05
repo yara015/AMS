@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { DataContext } from '../context/UserContext';
+import { DataContext } from '../Context/UserContext';
 import { Button, TextField, Card, CardContent, CardActions, Typography, Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import api from '../utils/api';
@@ -17,6 +17,10 @@ const Feedback = () => {
   const [showMyFeedbacks, setShowMyFeedbacks] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     fetchFeedbacks();
     const interval = setInterval(() => {
       fetchFeedbacks();

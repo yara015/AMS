@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, TextField, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { Delete, Download } from '@mui/icons-material';
 import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import ToastCont from '../toastCont';
+import { DataContext } from './../../Context/UserContext';
 const UploadDocument = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
   const [documents, setDocuments] = useState([]);
-  const fetchProfile = async () => {
-    try {
-        const response = await api.get('/auth/profile');
-        setProfile(response.data);
-        setData(response.data); // Update context with fetched data
-    } catch (error) {
-        console.error('Error fetching profile:', error);
-    }
-};
-useEffect(() => {
-  fetchProfile();
+//  const {dat}=useContext(DataContext)
+//   const fetchProfile = async () => {
+//     try {
+//         const response = await api.get('/auth/profile');
+//         // setProfile(response.data);
+//         setData(response.data); // Update context with fetched data
+//     } catch (error) {
+//         console.error('Error fetching profile:', error);
+//     }
+// };
+// useEffect(() => {
+//   fetchProfile();
 
  
-  const interval = setInterval(() => {
-    fetchProfile();
-  }, 5000); 
-  return () => clearInterval(interval); 
-}, []);
+//   const interval = setInterval(() => {
+//     fetchProfile();
+//   }, 5000); 
+//   return () => clearInterval(interval); 
+// }, []);
 
   useEffect(() => {
     fetchDocuments();
@@ -35,6 +37,7 @@ useEffect(() => {
   const fetchDocuments = async () => {
     try {
       const response = await api.get('/documents');
+      console.log(response.data);
       setDocuments(response.data);
     } catch (error) {
       console.error('Error fetching documents:', error);
@@ -75,7 +78,7 @@ useEffect(() => {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/documents/${id}`);
-      // alert('Document deleted successfully!');
+      
       toast.success('Document deleted successfully!')
       fetchDocuments();
     } catch (error) {
@@ -88,26 +91,37 @@ useEffect(() => {
   const handleDownload = async (id) => {
     try {
       const response = await api.get(`/documents/download/${id}`, { responseType: 'blob' });
+      
+      // Extract filename from the headers or set a default
+      const contentDisposition = response.headers['content-disposition'];
+      const filename = contentDisposition
+        ? contentDisposition.split('filename=')[1].replace(/"/g, '')  // Gets filename from header if available
+        : `${id}.pdf`; // Default filename with extension (adjust based on actual file type)
   
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
       const a = document.createElement('a');
       a.href = url;
-      a.download = id; // You can modify the name here
+      a.download = filename; // Use the extracted or default filename
       document.body.appendChild(a);
       a.click();
       a.remove();
-      toast.success("Document downloaded successfully")
+      window.URL.revokeObjectURL(url); // Clean up the URL
+      toast.success("Document downloaded successfully");
     } catch (error) {
       console.error('Error downloading document:', error);
-      toast.error(`${error.response?.data?.message }`)
-      // alert('Error downloading document: ' + (error.response?.data?.message || ''));
+      toast.error(error.response?.data?.message || 'Error downloading document');
     }
   };
+  
 
   const handleView = async (document) => {
-    const url = window.URL.createObjectURL(new Blob([document]));
-    console.log(document);
-    window.open(url, '_blank')
+    if (Array.isArray(document.file.data)) {
+      const blob = new Blob([new Uint8Array(document.file.data)], { type: document.fileType });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } else {
+      console.error("Invalid document file data");
+    }
   };
 
 

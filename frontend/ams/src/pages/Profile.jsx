@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Container, Form, Row, Col, Alert, ListGroup, Card } from 'react-bootstrap';
 import { FaFileUpload, FaRegUser } from 'react-icons/fa';
-import { DataContext } from '../context/UserContext';
+import { DataContext } from '../Context/UserContext';
 import api from '../utils/api';
 
 const Profile = () => {

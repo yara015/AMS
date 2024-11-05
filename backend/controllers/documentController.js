@@ -17,8 +17,9 @@ exports.uploadDocument = async (req, res) => {
     });
     console.log(newDocument);
 
-    await newDocument.save();
-    res.status(201).json(newDocument);
+    const doc=await newDocument.save();
+    console.log(doc);
+    res.status(201).json(doc);
   } catch (error) {
     console.error('Error uploading document:', error);
     res.status(500).json({ message: 'Failed to upload document.', error });
@@ -27,7 +28,8 @@ exports.uploadDocument = async (req, res) => {
 
 exports.getAllDocuments = async (req, res) => {
   try {
-    const documents = await Document.find().select('-file');
+    const documents = await Document.find();
+    console.log(documents);
     res.status(200).json(documents);
   } catch (error) {
     console.error('Error fetching documents:', error);

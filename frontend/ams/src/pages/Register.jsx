@@ -32,7 +32,7 @@ function Register() {
 
     return (
         <div>
-            <div style={{ height: "1.5rem" }}></div>
+            <div style={{ height: '6rem' }}></div>
             <Container className="d-flex justify-content-center align-items-center vh-100">
                 <style>{`
                     .register-container {
